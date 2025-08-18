@@ -1,79 +1,79 @@
-package sp.releasetestbackend.kakaoLogin.service;
+package sp.releasetestbackend.naverLogin.service;
 
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import sp.releasetestbackend.account.entity.LoginType;
 import sp.releasetestbackend.account_profile.entity.AccountProfile;
 import sp.releasetestbackend.account_profile.repository.AccountProfileRepository;
-import sp.releasetestbackend.kakaoLogin.repository.KakaoLoginRepository;
 import sp.releasetestbackend.jwt.JwtTokenService;
+import sp.releasetestbackend.naverLogin.repository.NaverLoginRepository;
 
 import java.net.URI;
 import java.util.Map;
 import java.util.Optional;
 
-@Slf4j
-@RequiredArgsConstructor
 @Service
-public class KakaoLoginServiceImpl implements KakaoLoginService {
-    private final KakaoLoginRepository kakaoLoginRepository;
+@RequiredArgsConstructor
+public class NaverLoginServiceImpl implements NaverLoginService {
+    private final NaverLoginRepository naverLoginRepository;
     private final AccountProfileRepository accountProfileRepository;
     private final JwtTokenService jwtTokenService;
 
     @Override
     public ResponseEntity<String> handleLogin(@Nullable String code) {
-        // code가 없으면 카카오 로그인 페이지로 리다이렉트
+        // code가 없으면 Naver 로그인 URL로 리다이렉트
         if (code == null) {
             return ResponseEntity.status(HttpStatus.FOUND)
-                    .location(URI.create(kakaoLoginRepository.getAccessCode()))
+                    .location(URI.create(naverLoginRepository.getAccessCode()))
                     .build();
         }
 
-        // 카카오 액세스 토큰 발급
-        Map<String, Object> tokenResponse = kakaoLoginRepository.getAccessToken(code);
+        // 네이버 액세스 토큰 발급
+        Map<String, Object> tokenResponse = naverLoginRepository.getAccessToken(code);
         if (tokenResponse == null || !tokenResponse.containsKey("access_token")) {
             return createErrorHtml("토큰 발급에 실패했습니다.");
         }
 
         String token = tokenResponse.get("access_token").toString();
 
-        // 카카오 사용자 정보 조회
-        Map<String, Object> userInfo = kakaoLoginRepository.getUserInfo(token);
+        // 네이버 사용자 정보 조회
+        Map<String, Object> userInfo = naverLoginRepository.getUserInfo(token);
         if (userInfo == null) {
             return createErrorHtml("사용자 정보를 가져올 수 없습니다.");
         }
 
-        // 사용자 정보 파싱
-        Map<String, Object> properties = (Map<String, Object>) userInfo.get("properties");
-        Map<String, Object> kakaoAccount = (Map<String, Object>) userInfo.get("kakao_account");
+        System.out.println(userInfo);
 
-        if (properties == null || kakaoAccount == null) {
-            return createErrorHtml("사용자 정보가 올바르지 않습니다.");
+        // 네이버 API는 response 객체 안에 사용자 정보가 있음
+        Map<String, Object> response = (Map<String, Object>) userInfo.get("response");
+        if (response == null) {
+            return createErrorHtml("네이버 사용자 정보 형식이 올바르지 않습니다.");
         }
 
-        String nickname = (String) properties.get("nickname");
-        String email = (String) kakaoAccount.get("email");
+        String email = (String) response.get("email");
+        String nickname = (String) response.get("nickname");
 
-        if (nickname == null || email == null) {
+        if (email == null || nickname == null) {
             return createErrorHtml("필수 사용자 정보가 누락되었습니다.");
         }
 
-        // 기존 사용자 확인 및 토큰 생성 (카카오 로그인 타입으로만 확인)
-        Optional<AccountProfile> existAccount = accountProfileRepository.findByEmailAndAccount_LoginType(email, sp.releasetestbackend.account.entity.LoginType.KAKAO);
+        // 4. 기존 사용자 확인
+        Optional<AccountProfile> existAccount =
+                accountProfileRepository.findByEmailAndAccount_LoginType(email, LoginType.NAVER);
         boolean isNewUser = existAccount.isEmpty();
-        String userToken = token; // 신규 사용자는 카카오 토큰을 그대로 사용
-        String displayNickname = nickname; // 기본값은 카카오 닉네임
+        String userToken = token;
+        String displayNickname = nickname;
 
         if (!isNewUser) {
-            // 기존 사용자 - JWT 토큰 생성 및 DB 닉네임 사용
             Long accountId = existAccount.get().getAccount().getId();
             userToken = jwtTokenService.generateToken(accountId);
             displayNickname = existAccount.get().getNickname();
         }
 
+        // 5. Naver 로그인 기준으로 postMessage
         return createSuccessHtml(token, userToken, displayNickname, email, isNewUser);
     }
 
@@ -83,7 +83,7 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
                   <body>
                     <script>
                       window.opener.postMessage({
-                        type: 'KAKAO_LOGIN_SUCCESS',
+                        type: 'NAVER_LOGIN_SUCCESS',
                         data: {
                           token: '%s',
                           tempToken: '%s',
@@ -109,7 +109,7 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
                   <body>
                     <script>
                       window.opener.postMessage({
-                        type: 'KAKAO_LOGIN_ERROR',
+                        type: 'NAVER_LOGIN_ERROR',
                         data: {
                           error: '%s'
                         }
@@ -124,6 +124,4 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
                 .header("Content-Type", "text/html; charset=UTF-8")
                 .body(htmlResponse);
     }
-
-
 }

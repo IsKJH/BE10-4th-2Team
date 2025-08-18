@@ -1,17 +1,53 @@
-import {useState, useCallback} from 'react';
+import {useState, useCallback, useEffect} from 'react';
+import {useNavigate} from 'react-router-dom';
 
 export const useAuth = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const navigate = useNavigate();
 
-    const login = useCallback(() => {
-        setIsLoggedIn(true);
-        // 실제로는 API 호출, 토큰 저장 등
+    const checkLoginStatus = useCallback(() => {
+        const token = localStorage.getItem('accessToken');
+        setIsLoggedIn(!!token);
+        return !!token;
     }, []);
+
+    // 컴포넌트 마운트 시 토큰 확인
+    useEffect(() => {
+        checkLoginStatus();
+        
+        // localStorage 변경 감지
+        const handleStorageChange = (e: StorageEvent) => {
+            if (e.key === 'accessToken') {
+                checkLoginStatus();
+            }
+        };
+        
+        window.addEventListener('storage', handleStorageChange);
+        
+        // 커스텀 이벤트 리스너 (같은 탭 내에서의 변경 감지)
+        const handleAuthChange = () => {
+            checkLoginStatus();
+        };
+        
+        window.addEventListener('authChange', handleAuthChange);
+        
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+            window.removeEventListener('authChange', handleAuthChange);
+        };
+    }, [checkLoginStatus]);
 
     const logout = useCallback(() => {
         setIsLoggedIn(false);
-        // 토큰 삭제 등
-    }, []);
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('tempToken');
+        localStorage.removeItem('userInfo');
+        
+        // 커스텀 이벤트 발생으로 다른 컴포넌트에 상태 변경 알림
+        window.dispatchEvent(new CustomEvent('authChange'));
+        
+        navigate('/');
+    }, [navigate]);
 
     const handleLoginModal = useCallback((showLoginModal: () => void) => {
         showLoginModal();
@@ -19,13 +55,19 @@ export const useAuth = () => {
 
     const socialLogin = useCallback((provider: 'kakao' | 'google' | 'naver') => {
         console.log('socialLogin 함수 호출됨:', provider);
-        const url = `http://localhost:8080/${provider}-authentication/front-login`;
+        const url = `http://localhost:8080/${provider}-authentication/login`;
         console.log('팝업 URL:', url);
+
+        // 화면 중앙에 팝업 위치 계산
+        const width = 500;
+        const height = 600;
+        const left = (screen.width - width) / 2;
+        const top = (screen.height - height) / 2;
 
         const popup = window.open(
             url,
             `${provider}Login`,
-            'width=500,height=600'
+            `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes`
         );
 
         console.log('팝업 객체:', popup);
@@ -36,6 +78,45 @@ export const useAuth = () => {
             return;
         }
 
+        // 로그인 성공 처리 공통 함수
+        const handleLoginSuccess = (loginData: any, loginType: string) => {
+            console.log(`${loginType} 로그인 데이터:`, loginData);
+            
+            // 기존 사용자인 경우 JWT 토큰(tempToken)을, 신규 사용자인 경우 tempToken을 저장
+            if (!loginData.isNewUser) {
+                // 기존 사용자 - JWT 토큰 저장 (백엔드에서 tempToken으로 전송됨)
+                localStorage.setItem('accessToken', loginData.tempToken);
+            } else {
+                // 신규 사용자 - tempToken 저장  
+                localStorage.setItem('tempToken', loginData.tempToken);
+            }
+            
+            localStorage.setItem('userInfo', JSON.stringify({
+                loginType: loginType,
+                nickname: loginData.nickname,
+                email: loginData.email,
+                isNewUser: loginData.isNewUser
+            }));
+
+            // 팝업 닫기 및 리스너 제거
+            popup.close();
+            window.removeEventListener('message', handleMessage);
+
+            // 페이지 이동
+            if (!loginData.isNewUser) {
+                setIsLoggedIn(true);
+                // 커스텀 이벤트 발생으로 다른 컴포넌트에 상태 변경 알림
+                window.dispatchEvent(new CustomEvent('authChange'));
+                
+                // 약간의 지연을 주어 상태 업데이트 보장
+                setTimeout(() => {
+                    navigate('/');
+                }, 100);
+            } else {
+                navigate('/signup');
+            }
+        };
+
         // 팝업에서 메시지를 받기 위한 리스너
         const handleMessage = (event: MessageEvent) => {
             // 보안을 위해 origin 체크
@@ -45,31 +126,14 @@ export const useAuth = () => {
 
             console.log('팝업에서 받은 데이터:', event.data);
 
-            if (event.data.type === 'KAKAO_LOGIN_SUCCESS' && event.data.data) {
-                const loginData = event.data.data;
-                // 토큰을 localStorage에 저장
-                localStorage.setItem('accessToken', loginData.token);
-                localStorage.setItem('tempToken', loginData.tempToken);
-                localStorage.setItem('userInfo', JSON.stringify({
-                    loginType: "KAKAO",
-                    nickname: loginData.nickname,
-                    email: loginData.email,
-                    isNewUser: loginData.isNewUser
-                }));
-
-                // 팝업 닫기
-                popup.close();
-
-                // 메시지 리스너 제거
-                window.removeEventListener('message', handleMessage);
-
-                if (!loginData.isNewUser) {
-                    setIsLoggedIn(true);
-                    window.location.href = 'http://localhost:5173';
-                } else {
-                    window.location.href = 'http://localhost:5173/signup';
-                }
-
+            const { type, data } = event.data;
+            
+            if (type === 'KAKAO_LOGIN_SUCCESS' && data) {
+                handleLoginSuccess(data, 'kakao');
+            } else if (type === 'GOOGLE_LOGIN_SUCCESS' && data) {
+                handleLoginSuccess(data, 'google');
+            } else if (type === 'NAVER_LOGIN_SUCCESS' && data) {
+                handleLoginSuccess(data, 'naver');
             }
         };
 
@@ -83,7 +147,7 @@ export const useAuth = () => {
                 clearInterval(checkClosed);
             }
         }, 1000);
-    }, []);
+    }, [navigate]);
 
     const signUp = useCallback(async (userData: { nickname: string; email: string; loginType: string }) => {
         try {
@@ -106,12 +170,12 @@ export const useAuth = () => {
             }
 
             const result = await response.json();
-            
+
             if (result.success) {
                 // 회원가입 성공 시 실제 JWT 토큰으로 교체
                 localStorage.setItem('accessToken', result.data.userToken);
                 localStorage.removeItem('tempToken');
-                
+
                 // 사용자 정보 업데이트
                 localStorage.setItem('userInfo', JSON.stringify({
                     id: result.data.id,
@@ -122,8 +186,11 @@ export const useAuth = () => {
 
                 setIsLoggedIn(true);
                 
+                // 커스텀 이벤트 발생으로 다른 컴포넌트에 상태 변경 알림
+                window.dispatchEvent(new CustomEvent('authChange'));
+
                 // 홈으로 이동
-                window.location.href = 'http://localhost:5173';
+                navigate('/');
             } else {
                 throw new Error(result.message || '회원가입에 실패했습니다.');
             }
@@ -131,14 +198,14 @@ export const useAuth = () => {
             console.error('회원가입 오류:', error);
             throw error;
         }
-    }, []);
+    }, [navigate]);
 
     return {
         isLoggedIn,
-        login,
         logout,
         handleLoginModal,
         socialLogin,
-        signUp
+        signUp,
+        checkLoginStatus
     };
 };

@@ -38,4 +38,8 @@ public class AccountProfile {
         this.email = email;
         this.nickname = nickname;
     }
+    
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }
