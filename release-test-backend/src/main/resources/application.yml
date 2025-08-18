@@ -22,3 +22,13 @@ spring:
     generate-ddl: ${SPRING_JPA_GENERATE_DDL}
     hibernate:
       ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
+
+jwt:
+  secret-key: ${JWT_SECRET_KEY:ReleaseTest2024-K7x9P2q5M8n3Q6r1S4t7U0v2W5y8Z1a4B7c0D3e6F9g2H5i8J1k4L7m0N3p6R9s2T5u8V1w4Y7z0}
+  expiration: ${JWT_EXPIRATION:86400000}
+
+kakao:
+  client-id: ${KAKAO_CLIENT_ID}
+  redirect-uri: ${KAKAO_REDIRECT_URI}
+  token-request-uri: ${KAKAO_TOKEN_REQUEST_URI}
+  user-info-request-uri: ${KAKAO_USER_INFO_REQUEST_URI}
