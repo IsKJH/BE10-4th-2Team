@@ -1,11 +1,13 @@
 import React from "react";
 import KakaoLoginImage from "../../assets/kakao_login_large_wide.png"
+import {useAuth} from "../hooks/useAuth.ts";
 
 interface LoginModalProps {
     closeLoginModal: () => void;
 }
 
 const LoginModal: React.FC<LoginModalProps> = ({closeLoginModal}) => {
+    const {socialLogin} = useAuth();
     return (
         <>
             <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50"
@@ -21,6 +23,7 @@ const LoginModal: React.FC<LoginModalProps> = ({closeLoginModal}) => {
 
                     <div className="flex justify-center items-center">
                         <img
+                            onClick={() => socialLogin("kakao")}
                             src={KakaoLoginImage}
                             alt="카카오 로그인"
                             className="cursor-pointer transition-all duration-200 hover:brightness-90 hover:scale-105 hover:shadow-lg rounded-lg"
