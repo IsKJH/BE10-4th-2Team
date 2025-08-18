@@ -1,7 +1,7 @@
-package sp.releasetestbackend.kakaoLogin.service;
+package sp.releasetestbackend.googleLogin.service;
 
 import org.springframework.http.ResponseEntity;
 
-public interface KakaoLoginService {
+public interface GoogleLoginService {
     ResponseEntity<String> handleLogin(String code);
 }

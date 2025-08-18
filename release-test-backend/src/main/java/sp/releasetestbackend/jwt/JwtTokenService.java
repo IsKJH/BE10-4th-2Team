@@ -33,14 +33,23 @@ public class JwtTokenService {
     
     public Long getAccountIdFromToken(String token) {
         try {
+            System.out.println("JWT 파싱 시도 중, 토큰: " + token);
+            System.out.println("사용할 secretKey: " + secretKey);
+            
             Claims claims = Jwts.parserBuilder()
                     .setSigningKey(secretKey)
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
-            return Long.parseLong(claims.getSubject());
+            
+            String subject = claims.getSubject();
+            System.out.println("토큰에서 추출한 subject: " + subject);
+            
+            return Long.parseLong(subject);
         } catch (Exception e) {
-            log.error("Failed to parse JWT token: {}", e.getMessage());
+            System.out.println("JWT 파싱 실패: " + e.getMessage());
+            e.printStackTrace();
+            log.error("Failed to parse JWT token: {}", e.getMessage(), e);
             return null;
         }
     }
