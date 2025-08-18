@@ -1,0 +1,38 @@
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Backend (Spring Boot / Gradle)
+release-test-backend/build/
+release-test-backend/.gradle/
+release-test-backend/out/
+release-test-backend/target/
+release-test-backend/*.jar
+release-test-backend/*.war
+release-test-backend/*.class
+
+# Frontend (Node.js / React)
+release-test-frontend/node_modules/
+release-test-frontend/dist/
+release-test-frontend/build/
+release-test-frontend/.env
+release-test-frontend/.env.local
+release-test-frontend/.env.development.local
+release-test-frontend/.env.test.local
+release-test-frontend/.env.production.local
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Temporary files
+*.tmp
+*.temp
