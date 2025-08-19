@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { FiGrid, FiSun, FiZap, FiCalendar, FiLogOut, FiUser, FiMenu, FiChevronLeft } from 'react-icons/fi';
-import { useAuth } from '../../../../auth/hooks/useAuth';
+import { FiGrid, FiSun, FiZap, FiCalendar, FiLogOut, FiUser, FiMenu, FiChevronLeft, FiCheckSquare, FiHome } from 'react-icons/fi';
+import { useAuth } from '@/auth/hooks/useAuth';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { showConfirmAlert } from '../../../utils/sweetAlert';
+import { showConfirmAlert } from '@/shared/utils/sweetAlert';
 import './Sidebar.css';
 
 interface MenuItem {
@@ -13,10 +13,12 @@ interface MenuItem {
 }
 
 const menuItems: MenuItem[] = [
-    { name: '홈', icon: <FiGrid />, path: '/' },
+    { name: '대시보드', icon: <FiHome />, path: '/' },
+    { name: '오늘 할 일', icon: <FiGrid />, path: '/today' },
     { name: '내일 할 일', icon: <FiSun />, path: '/tomorrow' },
     { name: '중요 업무', icon: <FiZap />, path: '/important' },
     { name: '캘린더', icon: <FiCalendar />, path: '/calendar' },
+    { name: '완료된 업무', icon: <FiCheckSquare />, path: '/completed' },
     { name: '마이페이지', icon: <FiUser />, path: '/mypage', requireAuth: true },
 ];
 
@@ -26,50 +28,31 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
-    const [activeMenu, setActiveMenu] = useState<string>("홈");
+    const [activeMenu, setActiveMenu] = useState<string>("대시보드");
     const { logout, isLoggedIn } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
 
-    // 현재 경로에 따라 활성 메뉴 결정하는 함수
     const getActiveMenuFromPath = (pathname: string): string => {
-        switch (pathname) {
-            case '/':
-                return '홈';
-            case '/mypage':
-                return '마이페이지';
-            case '/tomorrow':
-                return '내일 할 일';
-            case '/important':
-                return '중요 업무';
-            case '/calendar':
-                return '캘린더';
-            case '/signup':
-            case '/login-required':
-                return ''; // 특별 페이지는 활성 메뉴 없음
-            default:
-                return '홈'; // 알 수 없는 경로는 홈으로
+        const menuItem = menuItems.find(item => item.path === pathname);
+        if (menuItem) {
+            return menuItem.name;
         }
+        if (['/signup', '/login-required'].includes(pathname)) {
+            return '';
+        }
+        return '대시보드';
     };
 
-    // URL 변경 시 활성 메뉴 업데이트
     useEffect(() => {
         const activeMenuName = getActiveMenuFromPath(location.pathname);
         setActiveMenu(activeMenuName);
     }, [location.pathname]);
 
-    // 로그인 상태 변경 시 홈으로 이동 및 홈 메뉴 활성화
-    useEffect(() => {
-        if (location.pathname !== '/signup' && location.pathname !== '/login-required') {
-            const activeMenuName = getActiveMenuFromPath(location.pathname);
-            setActiveMenu(activeMenuName);
-        }
-    }, [isLoggedIn, location.pathname]);
 
     const handleMenuClick = (item: MenuItem) => {
         if (item.path) {
             navigate(item.path);
-            // navigate가 URL을 변경하면 useEffect에서 자동으로 activeMenu가 업데이트됨
         }
     };
 
@@ -80,14 +63,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
         }
     };
 
-    // 메뉴 아이템 필터링 (로그인 필요한 메뉴)
-    const filteredMenuItems = menuItems.filter(item => 
+    const filteredMenuItems = menuItems.filter(item =>
         !item.requireAuth || (item.requireAuth && isLoggedIn)
     );
 
     return (
         <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
-            <button 
+            <button
                 className="toggle-btn"
                 onClick={onToggle}
                 aria-label={isCollapsed ? "사이드바 펼치기" : "사이드바 접기"}
@@ -96,7 +78,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
             </button>
             <div className="sidebar-header">
                 <div className="logo">O</div>
-                {!isCollapsed && <span>Omagle</span>}
+                {!isCollapsed && <span>지건오피스</span>}
             </div>
             <nav className="sidebar-nav">
                 <ul>
@@ -108,7 +90,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
                             title={isCollapsed ? item.name : undefined}
                         >
                             <a href="#" onClick={(e) => e.preventDefault()}>
-                                {item.icon} 
+                                {item.icon}
                                 {!isCollapsed && <span>{item.name}</span>}
                             </a>
                         </li>
@@ -117,12 +99,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
             </nav>
             {isLoggedIn && (
                 <div className="sidebar-footer">
-                    <a 
-                        href="#" 
+                    <a
+                        href="#"
                         onClick={(e) => { e.preventDefault(); handleLogout(); }}
                         title={isCollapsed ? "로그아웃" : undefined}
                     >
-                        <FiLogOut /> 
+                        <FiLogOut />
                         {!isCollapsed && <span>로그아웃</span>}
                     </a>
                 </div>

@@ -2,19 +2,33 @@
     background-color: white;
     padding: 1.5rem;
     border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border-left: 5px solid;
 }
 
-.stat-card p {
-    margin: 0 0 0.5rem;
-    color: #8a92a6;
+.stat-card.progress {
+    border-color: #8e2de2;
 }
 
-.stat-card h3 {
-    margin: 0 0 0.5rem;
+.stat-card.tasks {
+    border-color: #4a00e0;
+}
+
+.stat-card-title {
+    margin: 0 0 0.5rem 0;
+    font-size: 1rem;
+    color: #64748b;
+}
+
+.stat-card-value {
+    margin: 0;
     font-size: 2rem;
+    font-weight: bold;
+    color: #1e293b;
 }
 
-.stat-card span {
-    color: #34a853;
-    font-weight: 500;
+.stat-card-description {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: #94a3b8;
 }

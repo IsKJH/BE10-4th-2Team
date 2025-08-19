@@ -26,4 +26,7 @@ public class Account {
     public Account(LoginType loginType) {
         this.loginType = loginType;
     }
+
+    public void setId(Long accountId) {
+    }
 }
