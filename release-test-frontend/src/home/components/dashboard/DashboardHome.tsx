@@ -1,63 +1,66 @@
-import React, {useMemo} from 'react';
-import {useAppStore} from '../../../store/useAppStore';
-import type {ViewType} from '../../pages/DashboardPage';
-import WeeklyChart from './WeeklyChart';
-import ProgressCircle from './ProgressCircle';
-import CalendarWidget from './CalendarWidget';
-import TodoList from '../todo/TodoList';
-import '../../style/dashboard/Dashboard.css';
-import { priorityOrder } from '../../../types/release';
+import React, { useState, useMemo } from 'react';
+import { useAppStore } from '@/store/useAppStore';
+import TodoList from '@/home/components/todo/TodoList';
+import TodoModal from '@/home/components/todo/TodoModal';
+import StatCard from '@/home/components/dashboard/StatCard';
+import WeeklyChart from '@/home/components/dashboard/WeeklyChart';
+import ProgressCircle from '@/home/components/dashboard/ProgressCircle';
+import CalendarWidget from '@/home/components/dashboard/CalendarWidget';
+import '@/home/style/dashboard/DashboardHome.css';
+import type { Priority } from '@/types/release';
 
-interface DashboardHomeProps { setActiveView: (view: ViewType) => void; }
-
-const DashboardHome: React.FC<DashboardHomeProps> = ({ setActiveView }) => {
-    const { todos: allTodos, userName, deleteTodo, toggleTodo } = useAppStore();
+const DashboardHome: React.FC = () => {
+    const { todos: allTodos, addTodo, deleteTodo, toggleTodo, userName } = useAppStore();
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
     const todayString = useMemo(() => new Date().toISOString().split('T')[0], []);
-    const tomorrowsTodosCount = useMemo(() => allTodos.filter(t => t.dueDate > todayString && !t.completed).length, [allTodos, todayString]);
 
-    const todaysUncompletedTodos = useMemo(() => allTodos.filter(t => t.dueDate === todayString && !t.completed), [allTodos, todayString]);
-    const sortedTodayTodos = useMemo(() => [...todaysUncompletedTodos].sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]), [todaysUncompletedTodos]);
-
-    const todaysCompletedCount = useMemo(() => allTodos.filter(t => t.dueDate === todayString && t.completed).length, [allTodos, todayString]);
-    const todaysTotalCount = todaysUncompletedTodos.length + todaysCompletedCount;
+    const todaysTodos = useMemo(() => allTodos.filter(t => t.dueDate === todayString), [allTodos, todayString]);
+    const todaysCompletedCount = useMemo(() => todaysTodos.filter(t => t.completed).length, [todaysTodos]);
+    const todaysTotalCount = todaysTodos.length;
     const todaysProgress = todaysTotalCount > 0 ? Math.round((todaysCompletedCount / todaysTotalCount) * 100) : 0;
 
-    const weeklyChartData = [{ name: '월', 저번주: 20, 이번주: 25 }, { name: '화', 저번주: 30, 이번주: 28 }];
+    const weeklyChartData = [
+        { name: '월', 저번주: 20, 이번주: 25 }, { name: '화', 저번주: 30, 이번주: 28 },
+        { name: '수', 저번주: 22, 이번주: 35 }, { name: '목', 저번주: 40, 이번주: 38 },
+        { name: '금', 저번주: 50, 이번주: 45 },
+    ];
+
+    const handleSave = (data: { text: string; priority: Priority }) => {
+        addTodo({ ...data, dueDate: todayString });
+        setIsModalOpen(false);
+    };
 
     return (
-        <div className="view-container">
-            <header className="view-header">
-                <div>
-                    <h1>{userName}님, 어서오세요!</h1>
-                    <p className="subtitle">오늘도 파이팅👊</p>
-                </div>
-            </header>
-            <div className="dashboard-home-grid">
-                <div className="stat-card-large stat-card-today">
-                    <h3>오늘 진행률</h3>
-                    <p className="progress-percent">{todaysProgress}%</p>
-                    <span className="progress-detail">{todaysCompletedCount} / {todaysTotalCount} 완료</span>
-                </div>
-                <div className="stat-card-large stat-card-tomorrow">
-                    <h3>내일 할 일</h3>
-                    <p className="task-count">{tomorrowsTodosCount}개</p>
-                    <span className="progress-detail">미리 계획해보세요!</span>
-                </div>
-                <div className="project-list-section">
-                    <h3>오늘의 프로젝트 (중요도 순)</h3>
-                    <TodoList todos={sortedTodayTodos} onRemove={deleteTodo} onToggle={toggleTodo} onEdit={() => setActiveView('TODAY')} />
-                </div>
-                <div className="weekly-chart-section">
-                    <h3>주간 업무 비교</h3>
-                    <WeeklyChart data={weeklyChartData} />
-                </div>
+        <>
+            <div className="dashboard-grid">
+                <header className="dashboard-header">
+                    <div>
+                        <h2>Hello {userName}</h2><p>Welcome back!</p>
+                    </div>
+                    <div className="header-actions">
+                        <input type="search" placeholder="Search" />
+                        <button className="add-task-btn" onClick={() => setIsModalOpen(true)}>+ Add a new task</button>
+                    </div>
+                </header>
+                <section className="main-stats">
+                    <StatCard title="오늘의 할 일" value={`${todaysTodos.length}개`} description={`${todaysCompletedCount}개 완료`} type="progress"/>
+                    <StatCard title="전체 진행률" value={`${todaysProgress}%`} type="tasks" />
+                </section>
+                <section className="project-list-section">
+                    <h3>오늘의 프로젝트</h3>
+                    <TodoList todos={todaysTodos} onRemove={deleteTodo} onToggle={toggleTodo} onEdit={() => {}}/>
+                </section>
+                <section className="weekly-chart-section">
+                    <h3>주간 업무 비교</h3><WeeklyChart data={weeklyChartData} />
+                </section>
                 <aside className="right-sidebar">
-                    <div className="progress-widget"><h4>오늘 진행률</h4><ProgressCircle percentage={todaysProgress}/></div>
+                    <div className="progress-widget"><h4>전체 진행률</h4><ProgressCircle percentage={89} /></div>
                     <div className="calendar-widget"><h4>캘린더</h4><CalendarWidget /></div>
                 </aside>
             </div>
-        </div>
+            {isModalOpen && (<TodoModal onClose={() => setIsModalOpen(false)} onSave={handleSave} todoToEdit={null}/>)}
+        </>
     );
 };
 export default DashboardHome;

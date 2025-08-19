@@ -1,11 +1,12 @@
 import React, { useState, useMemo } from 'react';
-import { useAppStore } from '../../../store/useAppStore';
-import type { Release, Priority } from '../../../types/release';
-import TodoList from '../todo/TodoList';
-import TodoModal from '../todo/TodoModal';
-import '../../style/views/CommonView.css';
+import { useAppStore } from '@/store/useAppStore'; // 경로 수정
+import type { Release, Priority } from '@/types/release'; // 경로 수정
+import TodoList from '@/home/components/todo/TodoList'; // 경로 수정
+import TodoModal from '@/home/components/todo/TodoModal'; // 경로 수정
+import '@/home/style/views/CommonView.css'; // 경로 수정
 
 const TomorrowView: React.FC = () => {
+    // (내용은 이전과 동일)
     const { todos, addTodo, updateTodo, deleteTodo, toggleTodo } = useAppStore();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingTodo, setEditingTodo] = useState<Release | null>(null);

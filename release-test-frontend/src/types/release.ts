@@ -1,11 +1,11 @@
-export const priorityOrder = {
+export type Priority = 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
+
+export const priorityOrder: Record<Priority, number> = {
     CRITICAL: 1,
     HIGH: 2,
     MEDIUM: 3,
     LOW: 4,
-} as const;
-
-export type Priority = keyof typeof priorityOrder;
+};
 
 export interface Release {
     id: number;
@@ -30,7 +30,6 @@ export interface WeeklyData {
     저번주: number;
     이번주: number;
 }
-
 
 // // 대시보드 전체 데이터 타입
 // export interface DashboardData {

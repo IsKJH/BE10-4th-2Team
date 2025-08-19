@@ -1,9 +1,9 @@
 import React, { useState, useMemo } from 'react';
-import { useAppStore } from '../../../store/useAppStore';
-import {type Release, type Priority, priorityOrder } from '../../../types/release';
-import TodoList from '../todo/TodoList';
-import TodoModal from '../todo/TodoModal';
-import '../../style/views/CommonView.css';
+import { useAppStore } from '@/store/useAppStore';
+import { type Release, type Priority, priorityOrder } from '@/types/release';
+import TodoList from '@/home/components/todo/TodoList';
+import TodoModal from '@/home/components/todo/TodoModal';
+import '@/home/style/views/CommonView.css';
 
 const TodayView: React.FC = () => {
     const { todos, addTodo, updateTodo, deleteTodo, toggleTodo } = useAppStore();

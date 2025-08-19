@@ -8,20 +8,20 @@ const getTomorrowString = () => {
     return tomorrow.toISOString().split('T')[0];
 };
 
-// --- 초기 샘플 데이터 ---
 const initialTodos: Release[] = [
     { id: 1, text: 'UI/UX 디자인 컨셉 확정', completed: false, priority: 'HIGH', userId: 1, dueDate: getTodayString() },
     { id: 2, text: '백엔드 API 명세서 작성', completed: true, priority: 'CRITICAL', userId: 1, dueDate: getTodayString() },
     { id: 3, text: 'DB 스키마 디자인', completed: false, priority: 'MEDIUM', userId: 1, dueDate: getTodayString() },
     { id: 4, text: '팀 주간 회고 준비', completed: false, priority: 'LOW', userId: 1, dueDate: getTodayString() },
     { id: 5, text: '내일 발표 자료 초안 작성', completed: false, priority: 'HIGH', userId: 1, dueDate: getTomorrowString() },
+    { id: 6, text: '프로젝트 배포 계획 수립', completed: false, priority: 'MEDIUM', userId: 1, dueDate: getTomorrowString() },
+    { id: 7, text: '지난 주 버그 수정', completed: true, priority: 'HIGH', userId: 1, dueDate: '2025-08-18' },
 ];
 const initialEvents: CalendarEvent[] = [
     { id: 1, date: getTodayString(), title: '주간 팀 미팅', type: 'meeting' },
     { id: 2, date: '2025-08-25', title: '여름 휴가', type: 'holiday' },
 ];
 
-// --- 스토어(Store) 타입 정의 ---
 interface AppState {
     todos: Release[];
     events: CalendarEvent[];
@@ -34,7 +34,6 @@ interface AppState {
     addEvent: (event: Omit<CalendarEvent, 'id'>) => void;
 }
 
-// --- 스토어 생성 ---
 export const useAppStore = create<AppState>((set) => ({
     todos: initialTodos,
     events: initialEvents,

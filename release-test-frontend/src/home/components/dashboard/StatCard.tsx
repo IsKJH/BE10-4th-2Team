@@ -1,21 +1,24 @@
 import React from 'react';
+
 import '../../style/dashboard/StatCard.css';
 
 interface StatCardProps {
     title: string;
     value: string;
-    type: 'progress' | 'tasks';
     description?: string;
+    type: 'progress' | 'tasks';
 }
 
-const StatCard: React.FC<StatCardProps> = ({ title, value, type, description }) => {
+const StatCard: React.FC<StatCardProps> = ({ title, value, description, type }) => {
     const cardClassName = `stat-card ${type}`;
 
     return (
         <div className={cardClassName}>
-            <h3>{title}</h3>
-            <p>{value}</p>
-            {description && <span>{description}</span>}
+            <div className="stat-card-header">
+                <h3 className="stat-card-title">{title}</h3>
+            </div>
+            <p className="stat-card-value">{value}</p>
+            {description && <span className="stat-card-description">{description}</span>}
         </div>
     );
 };

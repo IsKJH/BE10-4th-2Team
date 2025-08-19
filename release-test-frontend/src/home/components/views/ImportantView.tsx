@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
-import { useAppStore } from '../../../store/useAppStore';
-import TodoList from '../todo/TodoList';
-import '../../style/views/CommonView.css';
-import { priorityOrder } from '../../../types/release';
+import { useAppStore } from '@/store/useAppStore';
+import TodoList from '@/home/components/todo/TodoList';
+import '@/home/style/views/CommonView.css';
+import { priorityOrder } from '@/types/release';
 
 const ImportantView: React.FC = () => {
     const { todos, deleteTodo, toggleTodo } = useAppStore();

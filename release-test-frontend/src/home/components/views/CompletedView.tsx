@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useAppStore } from '../../../store/useAppStore';
+import { useAppStore } from '@/store/useAppStore';
 import type {Release} from '../../../types/release';
 import TodoList from '../todo/TodoList';
 import '../../style/views/CommonView.css';

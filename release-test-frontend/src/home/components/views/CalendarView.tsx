@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { useAppStore } from '../../../store/useAppStore';
+import { useAppStore } from '@/store/useAppStore';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import EventModal from '../calendar/EventModal';
 import '../../style/views/CalendarView.css';
