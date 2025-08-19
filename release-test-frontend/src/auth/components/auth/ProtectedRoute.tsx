@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { useAuth } from '../../hooks/useAuth';
-import LoginRequired from '../pages/LoginRequired';
+import { useAuth } from '../../hooks/useAuth.ts';
+import LoginRequired from '../../pages/LoginRequired.tsx';
 
 interface ProtectedRouteProps {
     children: React.ReactNode;

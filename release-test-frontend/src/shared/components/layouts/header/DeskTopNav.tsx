@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from "react";
 import {NAV_ITEMS} from "../../../constants/navigation.ts";
-import {useAuth} from "../../../hooks/useAuth.ts";
+import {useAuth} from "../../../../auth/hooks/useAuth.ts";
 import {useNavigate} from 'react-router-dom';
 import {useLocation} from 'react-router-dom';
 
@@ -127,7 +127,7 @@ const DeskTopNav: React.FC<NavProps> = ({showLoginModal}) => {
                                     aria-label="프로필 메뉴 열기"
                                     aria-expanded={isProfileOpen}
                                     aria-haspopup="true"
-                                    className="flex h-11 p-4 items-center justify-center rounded-full bg-gradient-to-r from-[#1993e5] to-[#1976d2] text-white transition-all hover:shadow-lg hover:scale-105 active:scale-95 cursor-pointer">
+                                    className="flex h-11 p-4 items-center justify-center rounded-full bg-gradient-to-r from-[#1993e5] to-[#1976d2] text-white transition-all hover:shadow-lg hover:scale-105 active:scale-95">
                                     {nickName}
                                 </button>
                                 {isProfileOpen && (

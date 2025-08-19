@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useAuth } from '../../hooks/useAuth';
+import { useAuth } from '../hooks/useAuth.ts';
+import { apiClient } from '../../shared/utils/api/Api.tsx';
+import { showSuccessAlert, showErrorAlert, showConfirmAlert, showDeleteConfirmAlert } from '../../shared/utils/sweetAlert';
 
 interface UserInfo {
     nickname: string;
@@ -30,7 +32,7 @@ const MyPage: React.FC = () => {
 
     const handleSaveNickname = async () => {
         if (!editedNickname.trim()) {
-            alert('닉네임을 입력해주세요.');
+            showErrorAlert('입력 오류', '닉네임을 입력해주세요.');
             return;
         }
 
@@ -41,27 +43,10 @@ const MyPage: React.FC = () => {
 
         setIsSaving(true);
         try {
-            // 백엔드 API 호출하여 닉네임 업데이트
-            const token = localStorage.getItem('accessToken');
-            if (!token) {
-                alert('로그인이 필요합니다.');
-                return;
-            }
-
-            const response = await fetch('http://localhost:8080/account/nickname', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({
-                    nickname: editedNickname
-                })
+            // apiClient를 사용하여 닉네임 업데이트
+            await apiClient.put('/account/nickname', {
+                nickname: editedNickname
             });
-
-            if (!response.ok) {
-                throw new Error('닉네임 변경에 실패했습니다.');
-            }
             
             // localStorage의 userInfo도 업데이트
             if (userInfo) {
@@ -74,10 +59,10 @@ const MyPage: React.FC = () => {
             }
             
             setIsEditing(false);
-            alert('닉네임이 변경되었습니다.');
+            showSuccessAlert('변경 완료', '닉네임이 성공적으로 변경되었습니다.');
         } catch (error) {
             console.error('닉네임 변경 실패:', error);
-            alert('닉네임 변경에 실패했습니다.');
+            showErrorAlert('변경 실패', '닉네임 변경에 실패했습니다.');
         } finally {
             setIsSaving(false);
         }
@@ -249,8 +234,9 @@ const MyPage: React.FC = () => {
                             </label>
                             <div className="space-y-3">
                                 <button
-                                    onClick={() => {
-                                        if (confirm('정말 로그아웃하시겠습니까?')) {
+                                    onClick={async () => {
+                                        const result = await showConfirmAlert('로그아웃', '정말 로그아웃하시겠습니까?');
+                                        if (result.isConfirmed) {
                                             logout();
                                         }
                                     }}
@@ -261,38 +247,26 @@ const MyPage: React.FC = () => {
                                 </button>
                                 <button
                                     onClick={async () => {
-                                        if (confirm('⚠️ 경고: 계정을 삭제하면 모든 데이터가 영구적으로 삭제됩니다.\n\n정말로 계정을 삭제하시겠습니까?')) {
-                                            if (confirm('마지막 확인: 계정 삭제를 진행하시겠습니까?\n\n이 작업은 되돌릴 수 없습니다.')) {
+                                        const firstConfirm = await showDeleteConfirmAlert('⚠️ 계정 삭제 경고', '계정을 삭제하면 모든 데이터가 영구적으로 삭제됩니다.\n\n정말로 계정을 삭제하시겠습니까?');
+                                        if (firstConfirm.isConfirmed) {
+                                            const finalConfirm = await showDeleteConfirmAlert('마지막 확인', '계정 삭제를 진행하시겠습니까?\n\n이 작업은 되돌릴 수 없습니다.');
+                                            if (finalConfirm.isConfirmed) {
                                                 try {
-                                                    const token = localStorage.getItem('accessToken');
-                                                    if (!token) {
-                                                        alert('로그인이 필요합니다.');
-                                                        return;
-                                                    }
-
-                                                    const response = await fetch('http://localhost:8080/account', {
-                                                        method: 'DELETE',
-                                                        headers: {
-                                                            'Authorization': `Bearer ${token}`
-                                                        }
-                                                    });
-
-                                                    if (!response.ok) {
-                                                        throw new Error('계정 삭제에 실패했습니다.');
-                                                    }
+                                                    // apiClient를 사용하여 계정 삭제
+                                                    await apiClient.delete('/account');
 
                                                     // 로컬 스토리지 정리
                                                     localStorage.removeItem('accessToken');
                                                     localStorage.removeItem('tempToken');
                                                     localStorage.removeItem('userInfo');
                                                     
-                                                    alert('계정이 성공적으로 삭제되었습니다.');
+                                                    await showSuccessAlert('삭제 완료', '계정이 성공적으로 삭제되었습니다.');
                                                     
                                                     // 홈페이지로 이동
                                                     window.location.href = '/';
                                                 } catch (error) {
                                                     console.error('계정 삭제 실패:', error);
-                                                    alert('계정 삭제에 실패했습니다.');
+                                                    showErrorAlert('삭제 실패', '계정 삭제에 실패했습니다.');
                                                 }
                                             }
                                         }

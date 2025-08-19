@@ -1,8 +1,8 @@
 import React, {type ReactNode, useState, useEffect} from "react";
 import Header from "./header/Header.tsx";
 // import Footer from "./Footer.tsx";
-import LoginModal from "../../modals/LoginModal.tsx";
-import {useAuth} from "../../hooks/useAuth.ts";
+import LoginModal from "../../../auth/modals/LoginModal.tsx";
+import {useAuth} from "../../../auth/hooks/useAuth.ts";
 import {useLocation} from "react-router-dom";
 
 interface LayoutProps {

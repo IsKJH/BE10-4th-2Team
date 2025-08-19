@@ -1,5 +1,7 @@
 import {useState, useCallback, useEffect} from 'react';
 import {useNavigate} from 'react-router-dom';
+import {apiClient} from "../../shared/utils/api/Api.tsx";
+import {showSuccessAlert, showErrorAlert} from "../../shared/utils/sweetAlert";
 
 export const useAuth = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -74,7 +76,7 @@ export const useAuth = () => {
 
         if (!popup) {
             console.error('팝업이 차단되었거나 생성에 실패했습니다.');
-            alert('팝업이 차단되었습니다. 브라우저 설정에서 팝업을 허용해주세요.');
+            showErrorAlert('팝업 차단', '브라우저 설정에서 팝업을 허용해주세요.');
             return;
         }
 
@@ -92,7 +94,7 @@ export const useAuth = () => {
             }
             
             localStorage.setItem('userInfo', JSON.stringify({
-                loginType: loginType,
+                loginType: loginType.toUpperCase(),
                 nickname: loginData.nickname,
                 email: loginData.email,
                 isNewUser: loginData.isNewUser
@@ -156,20 +158,17 @@ export const useAuth = () => {
                 throw new Error('임시 토큰이 없습니다.');
             }
 
-            const response = await fetch('http://localhost:8080/account/signup', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${tempToken}`
-                },
-                body: JSON.stringify(userData)
-            });
-
-            if (!response.ok) {
-                throw new Error('회원가입에 실패했습니다.');
-            }
-
-            const result = await response.json();
+            // apiClient를 사용하여 회원가입 요청
+            const result = await apiClient.post<{
+                success: boolean;
+                message?: string;
+                data: {
+                    id: number;
+                    email: string;
+                    nickname: string;
+                    userToken: string;
+                };
+            }>('/account/signup', userData);
 
             if (result.success) {
                 // 회원가입 성공 시 실제 JWT 토큰으로 교체
@@ -181,6 +180,7 @@ export const useAuth = () => {
                     id: result.data.id,
                     nickname: result.data.nickname,
                     email: result.data.email,
+                    loginType: userData.loginType,
                     isNewUser: false
                 }));
 
@@ -191,6 +191,11 @@ export const useAuth = () => {
 
                 // 홈으로 이동
                 navigate('/');
+                
+                // 페이지 이동 후 알림 표시
+                setTimeout(() => {
+                    showSuccessAlert('회원가입 완료! 🎉', '환영합니다! 서비스를 이용해보세요.');
+                }, 100);
             } else {
                 throw new Error(result.message || '회원가입에 실패했습니다.');
             }

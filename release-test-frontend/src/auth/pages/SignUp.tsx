@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import {useAuth} from "../../hooks/useAuth";
+import {useAuth} from "../hooks/useAuth.ts";
 
 const SignUp: React.FC = () => {
     const {signUp} = useAuth();
@@ -71,7 +71,7 @@ const SignUp: React.FC = () => {
 
         setIsLoading(true);
         try {
-            await signUp({nickname, email, loginType: loginType});
+            await signUp({nickname, email, loginType: loginType.toUpperCase()});
         } catch (error) {
             console.error("회원가입 실패:", error);
             alert("회원가입에 실패했습니다. 다시 시도해주세요.");
@@ -174,7 +174,7 @@ const SignUp: React.FC = () => {
                                                 </label>
                                                 <button
                                                     type="button"
-                                                    className="text-indigo-600 hover:text-indigo-500 text-sm underline cursor-pointer"
+                                                    className="text-indigo-600 hover:text-indigo-500 text-sm underline"
                                                     onClick={() => window.open('/terms/service', '_blank')}
                                                 >
                                                     보기
@@ -199,7 +199,7 @@ const SignUp: React.FC = () => {
                                                 </label>
                                                 <button
                                                     type="button"
-                                                    className="text-indigo-600 hover:text-indigo-500 text-sm underline cursor-pointer"
+                                                    className="text-indigo-600 hover:text-indigo-500 text-sm underline"
                                                     onClick={() => window.open('/terms/privacy', '_blank')}
                                                 >
                                                     보기
