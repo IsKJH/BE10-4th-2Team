@@ -119,7 +119,7 @@ const MyPage: React.FC = () => {
     }
 
     return (
-        <div className="h-full bg-gray-50 py-12 px-4">
+        <div className="h-full bg-gray-50 py-12 px-4 content-center">
             <div className="max-w-2xl mx-auto">
                 <div className="bg-white rounded-lg shadow-lg overflow-hidden">
                     {/* 헤더 */}

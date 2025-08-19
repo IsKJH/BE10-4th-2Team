@@ -1,10 +1,10 @@
 import {Route, Routes} from "react-router-dom";
 import React from "react";
-import Home from "../../home/pages/Home.tsx";
 import SignUp from "../../auth/pages/SignUp.tsx";
 import ProtectedRoute from "../../auth/components/auth/ProtectedRoute.tsx";
 import LoginRequired from "../../auth/pages/LoginRequired.tsx";
 import MyPage from "../../auth/pages/MyPage.tsx";
+import Dashboard from "../../home/components/dashboard/Dashboard.tsx";
 
 const Router: React.FC = () => {
     return (
@@ -12,7 +12,7 @@ const Router: React.FC = () => {
             <Routes>
                 <Route path="/" element={
                     <ProtectedRoute>
-                        <Home/>
+                        <Dashboard/>
                     </ProtectedRoute>
                 }/>
                 <Route path="/mypage" element={

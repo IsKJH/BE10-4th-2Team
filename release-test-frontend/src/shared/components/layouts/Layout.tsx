@@ -1,6 +1,5 @@
 import React, {type ReactNode, useState, useEffect} from "react";
-import Header from "./header/Header.tsx";
-// import Footer from "./Footer.tsx";
+import Sidebar from "./sidebar/Sidebar.tsx";
 import LoginModal from "../../../auth/modals/LoginModal.tsx";
 import {useAuth} from "../../../auth/hooks/useAuth.ts";
 import {useLocation} from "react-router-dom";
@@ -11,6 +10,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({children}) => {
     const [loginModalOpen, setLoginModalOpen] = useState(false);
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const {isLoggedIn} = useAuth();
     const location = useLocation();
     
@@ -19,6 +19,10 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
     }
     const closeLoginModal = () => {
         setLoginModalOpen(false);
+    }
+    
+    const toggleSidebar = () => {
+        setSidebarCollapsed(!sidebarCollapsed);
     }
     
     // 로그인 상태가 변경되면 모달 닫기
@@ -34,15 +38,20 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
             setLoginModalOpen(false);
         }
     }, [location.pathname]);
+    
     return (
         <>
             {loginModalOpen && <LoginModal closeLoginModal={closeLoginModal}/>}
-            <div className="grid grid-rows-[auto_1fr_auto] min-h-screen">
-                <Header showLoginModal={showLoginModal}/>
-                <main className="w-full">
+            <div className="flex min-h-screen bg-gray-50">
+                <Sidebar 
+                    isCollapsed={sidebarCollapsed} 
+                    onToggle={toggleSidebar}
+                />
+                <main className={`flex-1 overflow-y-auto transition-all duration-300 ${
+                    sidebarCollapsed ? 'ml-0' : 'ml-0'
+                }`}>
                     {children}
                 </main>
-                {/*<Footer/>*/}
             </div>
         </>
     );
