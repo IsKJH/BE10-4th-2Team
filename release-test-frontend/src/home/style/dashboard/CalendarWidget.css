@@ -1,0 +1,35 @@
+.calendar-container {
+    text-align: center;
+}
+
+.calendar-header {
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+}
+
+.day-name {
+    font-size: 0.8rem;
+    color: #8a92a6;
+}
+
+.date {
+    padding: 0.5rem;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.date:hover {
+    background-color: #f4f7fe;
+}
+
+.date.today {
+    background-color: #8884d8;
+    color: white;
+}

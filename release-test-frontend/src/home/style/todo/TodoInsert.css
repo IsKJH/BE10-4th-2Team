@@ -1,0 +1,26 @@
+.TodoInsert {
+    display: flex;
+    gap: 0.5rem;
+}
+.TodoInsert input {
+    flex: 1;
+    font-size: 1rem;
+    padding: 0.8rem;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+.TodoInsert input:focus {
+    border-color: #8884d8;
+}
+.TodoInsert button {
+    background: #8884d8;
+    color: white;
+    border: none;
+    padding: 0 1.5rem;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
