@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// API 기본 설정 (프록시 사용)
-const BASE_URL = '/api';
+// API 기본 설정 (백엔드 직접 연결)
+const BASE_URL = 'http://localhost:8080';
 
 // axios 인스턴스 생성
 const api = axios.create({
@@ -15,7 +15,12 @@ const api = axios.create({
 // 요청 인터셉터 (토큰 자동 추가)
 api.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('token');
+        const accessToken = localStorage.getItem('accessToken');
+        const tempToken = localStorage.getItem('tempToken');
+        
+        // accessToken이 있으면 우선 사용, 없으면 tempToken 사용
+        const token = accessToken || tempToken;
+        
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
@@ -33,7 +38,12 @@ api.interceptors.response.use(
     },
     (error) => {
         if (error.response?.status === 401) {
-            localStorage.removeItem('token');
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('tempToken');
+            localStorage.removeItem('userInfo');
+            
+            // 인증 실패 시 커스텀 이벤트 발생
+            window.dispatchEvent(new CustomEvent('authChange'));
         }
         return Promise.reject(error);
     }

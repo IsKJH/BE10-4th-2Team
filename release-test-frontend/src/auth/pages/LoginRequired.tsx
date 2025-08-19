@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import LoginModal from '../../modals/LoginModal';
+import LoginModal from '../modals/LoginModal.tsx';
 
 const LoginRequired: React.FC = () => {
     const [showLoginModal, setShowLoginModal] = useState(false);
@@ -31,7 +31,7 @@ const LoginRequired: React.FC = () => {
                     {/* 로그인 버튼 */}
                     <button
                         onClick={openLoginModal}
-                        className="w-full bg-indigo-600 text-white py-3 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors duration-200 font-medium cursor-pointer"
+                        className="w-full bg-indigo-600 text-white py-3 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors duration-200 font-medium"
                     >
                         로그인하기
                     </button>

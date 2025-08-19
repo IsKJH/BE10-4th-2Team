@@ -2,7 +2,7 @@ import React, {useCallback, useState, useEffect} from "react";
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import {NAV_ITEMS} from '../../../constants/navigation.ts';
-import {useAuth} from "../../../hooks/useAuth.ts";
+import {useAuth} from "../../../../auth/hooks/useAuth.ts";
 import {useNavigate, useLocation} from 'react-router-dom';
 
 interface NavProps {

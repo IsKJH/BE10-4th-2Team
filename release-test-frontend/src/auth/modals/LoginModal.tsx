@@ -46,7 +46,7 @@ const LoginModal: React.FC<LoginModalProps> = ({closeLoginModal}) => {
                         />
                         <button
                             onClick={() => socialLogin("google")}
-                            className="w-full bg-white rounded-lg cursor-pointer flex items-center font-medium text-gray-800 hover:brightness-90 hover:scale-105 hover:shadow-lg transition-all duration-200"
+                            className="w-full bg-white rounded-lg flex items-center font-medium text-gray-800 hover:brightness-90 hover:scale-105 hover:shadow-lg transition-all duration-200"
                             style={{fontFamily: 'Roboto, arial, sans-serif', height: 'auto', aspectRatio: '600/90', fontSize: '18px'}}
                         >
                             <div className="ml-4 mr-3 flex-shrink-0">
@@ -66,7 +66,7 @@ const LoginModal: React.FC<LoginModalProps> = ({closeLoginModal}) => {
                         </button>
                         <button
                             onClick={() => socialLogin("naver")}
-                            className="w-full rounded-lg cursor-pointer flex items-center font-medium text-white hover:brightness-90 hover:scale-105 hover:shadow-lg transition-all duration-200"
+                            className="w-full rounded-lg flex items-center font-medium text-white hover:brightness-90 hover:scale-105 hover:shadow-lg transition-all duration-200"
                             style={{fontFamily: 'Roboto, arial, sans-serif', height: 'auto', aspectRatio: '600/90', fontSize: '18px', backgroundColor: '#03C75A'}}
                         >
                             <div className="ml-4.5 mr-3 flex-shrink-0">
