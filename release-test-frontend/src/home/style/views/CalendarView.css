@@ -1,0 +1,109 @@
+.calendar-full-container {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.calendar-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.calendar-navigation h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #1e293b;
+}
+
+.calendar-navigation button {
+    background: none;
+    border: 1px solid #e2e8f0;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    color: #475569;
+    font-size: 1.2rem;
+}
+.calendar-navigation button:hover {
+    background-color: #f8fafc;
+}
+
+.calendar-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.calendar-table th {
+    text-align: center;
+    padding-bottom: 1rem;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+.calendar-table td {
+    border: 1px solid #f1f5f9;
+    height: 120px;
+    vertical-align: top;
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.calendar-table td:not(.empty):hover {
+    background-color: #f8fafc;
+}
+
+.calendar-table td.today {
+    background-color: #f1f5f9;
+}
+
+.calendar-table td.today .date-number {
+    background-color: #6a11cb;
+    color: white;
+}
+
+.date-number {
+    font-size: 0.9rem;
+    font-weight: 600;
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+}
+
+.events-container {
+    margin-top: 0.5rem;
+}
+
+.event-dot {
+    font-size: 0.8rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    margin-bottom: 0.3rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.event-dot.meeting {
+    background-color: #dbeafe;
+    color: #1d4ed8;
+}
+
+.event-dot.holiday {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.event-dot.event {
+    background-color: #fef3c7;
+    color: #92400e;
+}

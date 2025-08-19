@@ -1,81 +1,65 @@
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-    grid-template-areas:
-        "header header"
-        "main-stats main-stats right-sidebar"
-        "todo-list weekly-chart right-sidebar";
-}
-
-.dashboard-header {
-    grid-area: header;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-}
-
-.header-actions {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.header-actions input {
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 0.75rem;
-    font-size: 0.9rem;
-}
-
-.add-task-btn {
-    background-color: #8884d8;
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.main-stats {
-    grid-area: main-stats;
+.dashboard-home-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 2rem;
+    grid-template-rows: auto 1fr;
+    gap: 2.5rem;
+    grid-template-areas:
+    "today tomorrow"
+    "project-list right-sidebar"
+    "weekly-chart right-sidebar";
+}
+@media (max-width: 1200px) {
+    .dashboard-home-grid {
+        grid-template-columns: 1fr;
+        grid-template-areas: "today" "tomorrow" "project-list" "weekly-chart" "right-sidebar";
+    }
 }
 
-.todo-list-section,
-.weekly-chart-section,
-.progress-widget,
-.calendar-widget {
+.stat-card-large {
+    padding: 2rem;
+    border-radius: 24px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.stat-card-large:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.2);
+}
+.stat-card-today { grid-area: today; background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); }
+.stat-card-tomorrow { grid-area: tomorrow; background: linear-gradient(135deg, #ff512f 0%, #dd2476 100%); }
+.stat-card-large h3 { margin: 0; font-size: 1.2rem; font-weight: 500; opacity: 0.8; }
+.stat-card-large .progress-percent, .stat-card-large .task-count { font-size: 3.5rem; font-weight: 900; margin: 0.5rem 0; }
+.stat-card-large .progress-detail { font-size: 1rem; opacity: 0.9; }
+
+.project-list-section {
+    grid-area: project-list;
+    background: white;
+    padding: 1.5rem 2rem;
+    border-radius: 24px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+}
+.project-list-section h3 { margin-top: 0; margin-bottom: 1.5rem; }
+
+.weekly-chart-section {
+    grid-area: weekly-chart;
     background: white;
     padding: 1.5rem;
-    border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border-radius: 24px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
 }
-
-.todo-list-section {
-    grid-area: todo-list;
-}
-
-.weekly-chart-section{
-    grid-area: weekly-chart;
-}
-
 .right-sidebar {
     grid-area: right-sidebar;
     display: flex;
     flex-direction: column;
     gap: 2rem;
 }
-
-.loading-message,
-.error-message {
-    padding: 2rem;
-    font-size: 1.2rem;
-    color: #555;
-    text-align: center;
-    width: 100%;
+.progress-widget, .calendar-widget {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 24px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
 }
