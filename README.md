@@ -124,18 +124,42 @@ cd release-test-backend
 - 오늘의 할 일 목록
 
 ### 2. 할 일 관리
+<table>
+  <tr>
+    <td align="center" valign="top">
+      <b>할 일 관리</b><br/>
+      <img src="./public/할일관리.png" width="420"/>
+    </td>
+  </tr>
+</table>
 - 우선순위별 할 일 분류 (낮음, 보통, 높음)
 - 완료/미완료 상태 관리
 - 검색 및 필터링
 - 실시간 진행률 표시
 
 ### 3. 캘린더
+<table>
+  <tr>
+    <td align="center" valign="top">
+      <b>캘린더</b><br/>
+      <img src="./public/캘린더.png" width="420"/>
+    </td>
+  </tr>
+</table>
 - 월별 캘린더 뷰
 - 이벤트 생성 및 관리 (이벤트, 회의, 휴일)
 - 일별 상세 이벤트 보기
 - 대시보드 캘린더 위젯과 연동
 
 ### 4. 소셜 로그인
+<table>
+  <tr>
+    <td align="center" valign="top">
+      <b>소셜 로그인</b><br/>
+      <img src="./public/소셜로그인.png" width="420"/>
+    </td>
+  </tr>
+</table>
 - 카카오, 네이버, 구글 계정으로 간편 로그인
 - JWT 기반 인증
 - 자동 회원가입
