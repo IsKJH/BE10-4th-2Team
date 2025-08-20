@@ -16,6 +16,11 @@ release-test-backend/target/
 release-test-backend/*.jar
 release-test-backend/*.war
 release-test-backend/*.class
+release-test-backend/.env
+release-test-backend/.env.local
+release-test-backend/.env.development
+release-test-backend/.env.test
+release-test-backend/.env.production
 
 # Frontend (Node.js / React)
 release-test-frontend/node_modules/
