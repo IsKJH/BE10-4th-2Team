@@ -110,6 +110,14 @@ cd release-test-backend
 ## 🌟 주요 화면
 
 ### 1. 대시보드
+<table>
+  <tr>
+    <td align="center" valign="top">
+      <b>대시보드</b><br/>
+      <img src="./public/대시보드.png" width="420"/>
+    </td>
+  </tr>
+</table>
 - 실시간 할 일 진행률
 - 주간 업무 완료 비교 차트
 - 캘린더 위젯
