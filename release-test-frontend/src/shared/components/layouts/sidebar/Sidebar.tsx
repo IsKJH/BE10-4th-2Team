@@ -24,14 +24,28 @@ const menuItems: MenuItem[] = [
 
 interface SidebarProps {
     isCollapsed: boolean;
+    isMobileOpen: boolean;
     onToggle: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
+const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, isMobileOpen, onToggle }) => {
     const [activeMenu, setActiveMenu] = useState<string>("대시보드");
+    const [isMobile, setIsMobile] = useState(false);
     const { logout, isLoggedIn } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
+
+    // 화면 크기 감지
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+        
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     const getActiveMenuFromPath = (pathname: string): string => {
         const menuItem = menuItems.find(item => item.path === pathname);
@@ -68,13 +82,20 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
     );
 
     return (
-        <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
+        <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''} ${isMobileOpen ? 'mobile-open' : ''}`}>
             <button
                 className="toggle-btn"
                 onClick={onToggle}
-                aria-label={isCollapsed ? "사이드바 펼치기" : "사이드바 접기"}
+                aria-label={
+                    isMobile 
+                        ? (isMobileOpen ? "사이드바 닫기" : "사이드바 열기")
+                        : (isCollapsed ? "사이드바 펼치기" : "사이드바 접기")
+                }
             >
-                {isCollapsed ? <FiMenu /> : <FiChevronLeft />}
+                {isMobile 
+                    ? (isMobileOpen ? <FiChevronLeft /> : <FiMenu />)
+                    : (isCollapsed ? <FiMenu /> : <FiChevronLeft />)
+                }
             </button>
             <div className="sidebar-header">
                 <div className="logo">O</div>

@@ -1,7 +1,27 @@
 import {useState, useCallback, useEffect} from 'react';
 import {useNavigate} from 'react-router-dom';
-import {apiClient} from "../../shared/utils/api/Api.tsx";
-import {showSuccessAlert, showErrorAlert} from "../../shared/utils/sweetAlert";
+import {apiClient} from "@/shared/utils/api/Api";
+import {showSuccessAlert, showErrorAlert} from "@/shared/utils/sweetAlert";
+
+// 소셜 로그인 도메인 가져오기
+const getSocialLoginDomain = (): string => {
+    return import.meta.env.VITE_SOCIAL_LOGIN_DOMAIN || 'http://localhost:8080';
+};
+
+// 개발 환경에서만 로그 출력
+const devLog = (message: string, ...args: any[]) => {
+    if (import.meta.env.DEV) {
+        console.log(`[Auth] ${message}`, ...args);
+    }
+};
+
+const devError = (message: string, ...args: any[]) => {
+    if (import.meta.env.DEV) {
+        console.error(`[Auth Error] ${message}`, ...args);
+    }
+};
+
+const SOCIAL_LOGIN_DOMAIN = getSocialLoginDomain();
 
 export const useAuth = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -56,9 +76,9 @@ export const useAuth = () => {
     }, []);
 
     const socialLogin = useCallback((provider: 'kakao' | 'google' | 'naver') => {
-        console.log('socialLogin 함수 호출됨:', provider);
-        const url = `http://localhost:8080/${provider}-authentication/login`;
-        console.log('팝업 URL:', url);
+        devLog('socialLogin 함수 호출됨:', provider);
+        const url = `${SOCIAL_LOGIN_DOMAIN}/${provider}-authentication/login`;
+        devLog('팝업 URL:', url);
 
         // 화면 중앙에 팝업 위치 계산
         const width = 500;
@@ -72,17 +92,17 @@ export const useAuth = () => {
             `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes`
         );
 
-        console.log('팝업 객체:', popup);
+        devLog('팝업 객체:', popup);
 
         if (!popup) {
-            console.error('팝업이 차단되었거나 생성에 실패했습니다.');
+            devError('팝업이 차단되었거나 생성에 실패했습니다.');
             showErrorAlert('팝업 차단', '브라우저 설정에서 팝업을 허용해주세요.');
             return;
         }
 
         // 로그인 성공 처리 공통 함수
         const handleLoginSuccess = (loginData: any, loginType: string) => {
-            console.log(`${loginType} 로그인 데이터:`, loginData);
+            devLog(`${loginType} 로그인 데이터:`, loginData);
             
             // 기존 사용자인 경우 JWT 토큰(tempToken)을, 신규 사용자인 경우 tempToken을 저장
             if (!loginData.isNewUser) {
@@ -122,11 +142,12 @@ export const useAuth = () => {
         // 팝업에서 메시지를 받기 위한 리스너
         const handleMessage = (event: MessageEvent) => {
             // 보안을 위해 origin 체크
-            if (event.origin !== 'http://localhost:8080') {
+            if (event.origin !== SOCIAL_LOGIN_DOMAIN) {
+                devError('비인가된 origin에서 메시지:', event.origin);
                 return;
             }
 
-            console.log('팝업에서 받은 데이터:', event.data);
+            devLog('팝업에서 받은 데이터:', event.data);
 
             const { type, data } = event.data;
             
@@ -200,7 +221,7 @@ export const useAuth = () => {
                 throw new Error(result.message || '회원가입에 실패했습니다.');
             }
         } catch (error) {
-            console.error('회원가입 오류:', error);
+            devError('회원가입 오류:', error);
             throw error;
         }
     }, [navigate]);

@@ -36,7 +36,7 @@ public class TodoController {
     }
 
     // 할 일 수정
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Todo> updateTodo(@PathVariable Long id, @RequestBody TodoDTO.Update request, @RequestHeader("Authorization") String token) {
         try {
             Long accountId = authUtils.getAccountIdFromToken(token);
@@ -48,7 +48,7 @@ public class TodoController {
     }
 
     // 할 일 완료 토글 API
-    @PatchMapping("/{id}/toggle")
+    @PutMapping("/{id}/toggle")
     public ResponseEntity<Todo> toggleTodo(@PathVariable Long id, @RequestHeader("Authorization") String token) {
         try {
             Long accountId = authUtils.getAccountIdFromToken(token);

@@ -1,0 +1,246 @@
+/* Mobile-first approach for WeeklyChart container */
+.weekly-chart-container {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    overflow-x: auto;
+}
+
+.weekly-chart-title {
+    margin: 0 0 1rem 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1e293b;
+    text-align: center;
+}
+
+.weekly-chart-wrapper {
+    height: 200px;
+    width: 100%;
+    min-width: 300px; /* Minimum width to prevent squishing */
+}
+
+/* Recharts responsive overrides */
+.recharts-wrapper {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.recharts-cartesian-grid line {
+    stroke: #f1f5f9;
+    stroke-dasharray: 2 2;
+}
+
+.recharts-tooltip-wrapper {
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.recharts-default-tooltip {
+    background-color: white !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    padding: 0.75rem !important;
+    font-size: 0.875rem !important;
+}
+
+.recharts-legend-wrapper {
+    padding-bottom: 1rem !important;
+}
+
+.recharts-legend-item-text {
+    font-size: 0.8rem !important;
+    color: #64748b !important;
+}
+
+/* Axis styling */
+.recharts-xAxis .recharts-cartesian-axis-tick-value,
+.recharts-yAxis .recharts-cartesian-axis-tick-value {
+    font-size: 0.75rem;
+    fill: #64748b;
+}
+
+/* Line styling */
+.recharts-line-curve {
+    stroke-width: 2.5;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+.recharts-line-dot {
+    r: 4;
+    stroke-width: 2;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
+
+/* Small Mobile (480px and below) */
+@media (max-width: 480px) {
+    .weekly-chart-container {
+        padding: 0.75rem;
+        border-radius: 8px;
+    }
+
+    .weekly-chart-title {
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .weekly-chart-wrapper {
+        height: 180px;
+        min-width: 280px;
+    }
+
+    .recharts-xAxis .recharts-cartesian-axis-tick-value,
+    .recharts-yAxis .recharts-cartesian-axis-tick-value {
+        font-size: 0.7rem;
+    }
+
+    .recharts-legend-item-text {
+        font-size: 0.75rem !important;
+    }
+
+    .recharts-default-tooltip {
+        font-size: 0.8rem !important;
+        padding: 0.5rem !important;
+    }
+
+    .recharts-line-curve {
+        stroke-width: 2;
+    }
+
+    .recharts-line-dot {
+        r: 3;
+    }
+}
+
+/* Tablet (768px - 1199px) */
+@media (min-width: 768px) {
+    .weekly-chart-container {
+        padding: 1.25rem;
+        border-radius: 14px;
+    }
+
+    .weekly-chart-title {
+        font-size: 1.25rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .weekly-chart-wrapper {
+        height: 220px;
+        min-width: 400px;
+    }
+
+    .recharts-xAxis .recharts-cartesian-axis-tick-value,
+    .recharts-yAxis .recharts-cartesian-axis-tick-value {
+        font-size: 0.8rem;
+    }
+
+    .recharts-legend-item-text {
+        font-size: 0.85rem !important;
+    }
+
+    .recharts-default-tooltip {
+        font-size: 0.9rem !important;
+        padding: 0.875rem !important;
+    }
+}
+
+/* Desktop (1200px and above) */
+@media (min-width: 1200px) {
+    .weekly-chart-container {
+        padding: 1.5rem;
+        border-radius: 16px;
+    }
+
+    .weekly-chart-title {
+        font-size: 1.375rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .weekly-chart-wrapper {
+        height: 250px;
+        min-width: 500px;
+    }
+
+    .recharts-xAxis .recharts-cartesian-axis-tick-value,
+    .recharts-yAxis .recharts-cartesian-axis-tick-value {
+        font-size: 0.875rem;
+    }
+
+    .recharts-legend-item-text {
+        font-size: 0.9rem !important;
+    }
+
+    .recharts-default-tooltip {
+        font-size: 1rem !important;
+        padding: 1rem !important;
+    }
+
+    .recharts-line-curve {
+        stroke-width: 3;
+    }
+
+    .recharts-line-dot {
+        r: 5;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .weekly-chart-container {
+        background-color: #1e293b;
+        color: #f1f5f9;
+    }
+
+    .weekly-chart-title {
+        color: #f1f5f9;
+    }
+
+    .recharts-cartesian-grid line {
+        stroke: #334155;
+    }
+
+    .recharts-default-tooltip {
+        background-color: #334155 !important;
+        border-color: #475569 !important;
+        color: #f1f5f9 !important;
+    }
+
+    .recharts-xAxis .recharts-cartesian-axis-tick-value,
+    .recharts-yAxis .recharts-cartesian-axis-tick-value {
+        fill: #94a3b8;
+    }
+
+    .recharts-legend-item-text {
+        color: #94a3b8 !important;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .weekly-chart-container {
+        border: 2px solid #000;
+    }
+
+    .recharts-line-curve {
+        stroke-width: 4;
+    }
+
+    .recharts-line-dot {
+        stroke-width: 3;
+    }
+}
+
+/* Print styles */
+@media print {
+    .weekly-chart-container {
+        box-shadow: none;
+        border: 1px solid #000;
+        break-inside: avoid;
+    }
+
+    .recharts-line-curve {
+        stroke-width: 2;
+    }
+}

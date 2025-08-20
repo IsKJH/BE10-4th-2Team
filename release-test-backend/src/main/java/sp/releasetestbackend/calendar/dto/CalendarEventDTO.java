@@ -14,4 +14,11 @@ public class CalendarEventDTO {
         private String title;
         private EventType type;
     }
+
+    @Getter
+    @Setter
+    public static class Update {
+        private String title;
+        private EventType type;
+    }
 }

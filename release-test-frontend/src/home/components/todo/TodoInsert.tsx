@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import '../../style/todo/TodoInsert.css';
+import '@/home/style/todo/TodoInsert.css';
 
 interface TodoInsertProps { onInsert: (text: string) => void; }
 
@@ -13,14 +13,15 @@ const TodoInsert: React.FC<TodoInsertProps> = ({ onInsert }) => {
     }, [onInsert, value]);
 
     return (
-        <form className="TodoInsert" onSubmit={onSubmit}>
+        <form className="TodoInsert flex gap-3 p-4 border-b" onSubmit={onSubmit}>
             <input
                 placeholder="예: 프로젝트 회의"
                 value={value}
                 onChange={onChange}
+                className="input input-default input-md flex-1"
                 autoFocus // 모달이 뜨면 바로 입력할 수 있도록 포커스
             />
-            <button type="submit">추가</button>
+            <button type="submit" className="btn btn-primary btn-md">추가</button>
         </form>
     );
 };

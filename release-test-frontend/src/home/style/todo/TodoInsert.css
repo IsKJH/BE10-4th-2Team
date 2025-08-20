@@ -1,26 +1,204 @@
+/* Mobile-first approach for TodoInsert */
 .TodoInsert {
     display: flex;
     gap: 0.5rem;
+    width: 100%;
+    margin-bottom: 1rem;
 }
+
 .TodoInsert input {
     flex: 1;
-    font-size: 1rem;
-    padding: 0.8rem;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
+    font-size: var(--text-sm);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius-lg);
     outline: none;
-    transition: border-color 0.2s;
+    transition: all var(--transition-fast);
+    background-color: white;
+    color: var(--gray-900);
+    min-height: 44px; /* Touch-friendly minimum */
 }
+
+.TodoInsert input::placeholder {
+    color: var(--gray-400);
+    font-size: var(--text-sm);
+}
+
 .TodoInsert input:focus {
-    border-color: #8884d8;
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 3px rgba(12, 140, 233, 0.1);
+    background-color: var(--gray-50);
 }
+
+.TodoInsert input:hover:not(:focus) {
+    border-color: var(--gray-400);
+}
+
 .TodoInsert button {
-    background: #8884d8;
+    /* 디자인 시스템의 버튼 클래스 사용 */
+    background: linear-gradient(135deg, var(--secondary-600) 0%, var(--secondary-500) 100%);
     color: white;
-    border: none;
-    padding: 0 1.5rem;
-    font-size: 1rem;
-    border-radius: 8px;
+    border: 1px solid transparent;
+    border-color: var(--secondary-600);
+    padding: var(--space-3) var(--space-5);
+    font-size: var(--text-sm);
+    border-radius: var(--radius-lg);
     cursor: pointer;
-    font-weight: bold;
+    font-weight: var(--font-medium);
+    transition: all var(--transition-fast);
+    min-width: 80px;
+    min-height: 44px; /* Touch-friendly minimum */
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-sm);
+}
+
+.TodoInsert button:hover {
+    background: linear-gradient(135deg, var(--secondary-700) 0%, var(--secondary-600) 100%);
+    border-color: var(--secondary-700);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.TodoInsert button:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+.TodoInsert button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+    pointer-events: none;
+}
+
+/* Small Mobile (480px and below) */
+@media (max-width: 480px) {
+    .TodoInsert {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .TodoInsert input {
+        font-size: 0.875rem;
+        padding: 0.75rem;
+        border-radius: 6px;
+    }
+
+    .TodoInsert input::placeholder {
+        font-size: 0.875rem;
+    }
+
+    .TodoInsert button {
+        font-size: 0.875rem;
+        padding: 0.75rem 1rem;
+        border-radius: 6px;
+        width: 100%;
+    }
+}
+
+/* Tablet (768px - 1199px) */
+@media (min-width: 768px) {
+    .TodoInsert {
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .TodoInsert input {
+        font-size: 1rem;
+        padding: 0.875rem 1rem;
+        border-radius: 10px;
+    }
+
+    .TodoInsert input::placeholder {
+        font-size: 1rem;
+    }
+
+    .TodoInsert button {
+        font-size: 1rem;
+        padding: 0 1.5rem;
+        border-radius: 10px;
+        min-width: 100px;
+    }
+}
+
+/* Desktop (1200px and above) */
+@media (min-width: 1200px) {
+    .TodoInsert {
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .TodoInsert input {
+        font-size: 1rem;
+        padding: 0.8rem 1rem;
+        border-radius: 8px;
+    }
+
+    .TodoInsert button {
+        font-size: 1rem;
+        padding: 0 1.5rem;
+        border-radius: 8px;
+        min-width: 120px;
+    }
+}
+
+/* Focus states for accessibility */
+.TodoInsert button:focus-visible {
+    outline: 2px solid var(--secondary-500);
+    outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .TodoInsert input {
+        border: 2px solid var(--gray-900);
+    }
+
+    .TodoInsert input:focus {
+        border-color: var(--gray-900);
+        box-shadow: 0 0 0 3px var(--gray-900);
+    }
+
+    .TodoInsert button {
+        background: var(--gray-900);
+        border: 2px solid white;
+    }
+
+    .TodoInsert button:hover {
+        background: var(--gray-700);
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .TodoInsert input,
+    .TodoInsert button {
+        transition: none;
+    }
+
+    .TodoInsert button:hover {
+        transform: none;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .TodoInsert input {
+        background-color: var(--gray-800);
+        color: var(--gray-100);
+        border-color: var(--gray-600);
+    }
+
+    .TodoInsert input::placeholder {
+        color: var(--gray-500);
+    }
+
+    .TodoInsert input:focus {
+        background-color: var(--gray-700);
+        border-color: var(--primary-500);
+    }
 }

@@ -27,7 +27,7 @@ public class DashboardService {
         List<Todo> todaysTodos = todoRepository.findByAccountIdAndDueDate(accountId, today);
         long todaysTotalCount = todaysTodos.size();
         long todaysCompleteCount = todaysTodos.stream().filter(Todo::isCompleted).count();
-        int todaysProgress = (todaysTotalCount > 0) ? (int)  Math.round((double) todaysTotalCount / todaysCompleteCount) : 0;
+        int todaysProgress = (todaysTotalCount > 0) ? (int) Math.round((double) todaysCompleteCount / todaysTotalCount * 100) : 0;
 
         // 2. 내일 할 일 개수 계산
         long tomorrowsTodoCount = todoRepository.countByAccountIdAndDueDate(accountId, tomorrow);
@@ -39,8 +39,12 @@ public class DashboardService {
                 Map.of("name", "수", "저번주", 22, "이번주", 35)
         );
 
-        // 4. 전체 진행률 (지금 샘플임)
-        int overallProgress =  89;
+        // 4. 전체 진행률 (최근 1주일 기준으로 계산)
+        LocalDate weekAgo = today.minusDays(7);
+        List<Todo> weeklyTodos = todoRepository.findByAccountIdAndDueDateBetween(accountId, weekAgo, today);
+        long weeklyTotalCount = weeklyTodos.size();
+        long weeklyCompleteCount = weeklyTodos.stream().filter(Todo::isCompleted).count();
+        int overallProgress = (weeklyTotalCount > 0) ? (int) Math.round((double) weeklyCompleteCount / weeklyTotalCount * 100) : 0;
 
         // 5. 계산된 모든 데이터를 DTO에 담아 반환
         return new DashboardResponseDTO(

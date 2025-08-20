@@ -7,7 +7,7 @@ import sp.releasetestbackend.dashboard.dto.DashboardResponseDTO;
 import sp.releasetestbackend.dashboard.service.DashboardService;
 
 @RestController
-@RequestMapping("api/dashboard")
+@RequestMapping("/api/dashboard")
 @RequiredArgsConstructor
 @CrossOrigin
 public class DashboardController {

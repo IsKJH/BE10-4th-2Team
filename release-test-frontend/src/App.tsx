@@ -1,14 +1,15 @@
 import './App.css'
-import Layout from "./shared/components/layouts/Layout.tsx";
+import Layout from "./shared/components/layouts/Layout";
 import Router from "./shared/routers/Router";
+import ErrorBoundary from "./shared/components/ErrorBoundary";
 import {BrowserRouter, Routes, Route} from "react-router-dom";
-import TermsService from "./shared/terms/TermsService.tsx";
-import PrivacyPolicy from "./shared/terms/PrivacyPolicy.tsx";
+import TermsService from "./shared/terms/TermsService";
+import PrivacyPolicy from "./shared/terms/PrivacyPolicy";
 
 function App() {
 
     return (
-        <>
+        <ErrorBoundary>
             <BrowserRouter>
                 <Routes>
                     {/* 헤더 없는 약관 페이지들 */}
@@ -22,7 +23,7 @@ function App() {
                     }/>
                 </Routes>
             </BrowserRouter>
-        </>
+        </ErrorBoundary>
     )
 }
 

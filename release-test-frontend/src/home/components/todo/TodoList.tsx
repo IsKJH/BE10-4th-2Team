@@ -1,7 +1,9 @@
 import React from 'react';
-import TodoListItem from './TodoListItem';
-import '../../style/todo/TodoList.css';
-import type {Release} from '../../../types/release';
+import TodoListItem from '@/home/components/todo/TodoListItem';
+import { EmptyState } from '@/shared/components/ui';
+import '@/home/style/todo/TodoList.css';
+import type {Release} from '@/home/types/release';
+import { FiCheckSquare } from 'react-icons/fi';
 
 interface TodoListProps {
     todos: Release[];
@@ -13,17 +15,24 @@ interface TodoListProps {
 const TodoList: React.FC<TodoListProps> = ({ todos, onRemove, onToggle, onEdit }) => (
     <div className="TodoList">
         {todos.length > 0 ? (
-            todos.map((todo) => (
-                <TodoListItem
-                    todo={todo}
-                    key={todo.id}
-                    onRemove={onRemove}
-                    onToggle={onToggle}
-                    onEdit={onEdit}
-                />
-            ))
+            <div className="todo-items-container">
+                {todos.map((todo) => (
+                    <TodoListItem
+                        todo={todo}
+                        key={todo.id}
+                        onRemove={onRemove}
+                        onToggle={onToggle}
+                        onEdit={onEdit}
+                    />
+                ))}
+            </div>
         ) : (
-            <p className="empty-message">오늘 할 일이 없습니다!</p>
+            <EmptyState
+                icon={<FiCheckSquare size={48} />}
+                title="할 일이 없습니다"
+                description="새로운 할 일을 추가해보세요!"
+                className="flex-1"
+            />
         )}
     </div>
 );
