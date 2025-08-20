@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sp.releasetestbackend.account.entity.Account;
+import sp.releasetestbackend.account.repository.AccountRepository;
 import sp.releasetestbackend.home.dto.TodoDTO;
 import sp.releasetestbackend.home.entity.Todo;
 import sp.releasetestbackend.home.repository.TodoRepository;
@@ -16,12 +17,14 @@ import java.util.List;
 @Transactional
 public class TodoService {
     private final TodoRepository todoRepository;
+    private final AccountRepository accountRepository;
 
     // 할 일 생성
     public Todo createTodo(Long accountId, TodoDTO.Create request) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 계정을 찾을 수 없습니다: " + accountId));
+        
         Todo newTodo = new Todo();
-        Account account = new Account(); // 실제로는 AccountRepository에서 accountId로 조회해야 함
-        account.setId(accountId); // 임시로 ID만 설정
         newTodo.setAccount(account);
         newTodo.setText(request.getText());
         newTodo.setPriority(request.getPriority());

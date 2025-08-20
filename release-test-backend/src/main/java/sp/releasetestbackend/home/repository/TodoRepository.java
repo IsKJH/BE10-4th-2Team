@@ -12,4 +12,5 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
     List<Todo> findByAccountIdAndPriorityInAndCompletedIsFalse(Long accountId, List<Priority> priorities);
     List<Todo> findByAccountIdAndCompletedIsTrue(Long accountId);
     long countByAccountIdAndDueDate(Long accountId, LocalDate dueDate);
+    List<Todo> findByAccountIdAndDueDateBetween(Long accountId, LocalDate startDate, LocalDate endDate);
 }
