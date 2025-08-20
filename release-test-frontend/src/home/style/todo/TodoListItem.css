@@ -1,43 +1,432 @@
-.ReleaseListItem {
-    padding: 1rem;
+/* Mobile-first approach - Todo 리스트 아이템 */
+.todo-list-item {
+    padding: 0.75rem;
     display: flex;
     align-items: center;
-    border-bottom: 1px solid #dee2e6;
+    background: white;
+    border: 1px solid var(--gray-200, #e2e8f0);
+    border-radius: var(--radius-lg, 8px);
+    margin-bottom: 0;
+    transition: all var(--transition-fast, 0.2s ease);
+    position: relative;
+    overflow: hidden;
+    min-height: 60px;
+    width: 100%;
 }
-.ReleaseListItem:nth-child(even) {
-    background: #f8f9fa;
+
+.todo-list-item:hover {
+    box-shadow: var(--shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
+    border-color: var(--gray-300, #cbd5e1);
+    transform: translateY(-1px);
 }
+
+.todo-list-item:last-child {
+    margin-bottom: 0;
+}
+
+/* 우선순위별 왼쪽 보더 */
+.todo-list-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    transition: all var(--transition-fast);
+}
+
+.todo-list-item.priority-high::before {
+    background: linear-gradient(135deg, var(--danger-500), var(--danger-600));
+}
+
+.todo-list-item.priority-medium::before {
+    background: linear-gradient(135deg, var(--warning-500), var(--warning-600));
+}
+
+.todo-list-item.priority-low::before {
+    background: linear-gradient(135deg, var(--success-500), var(--success-600));
+}
+
+/* 체크박스 영역 */
 .checkbox {
     cursor: pointer;
     flex: 1;
     display: flex;
     align-items: center;
+    gap: var(--space-3);
+    transition: all var(--transition-fast);
 }
-.checkbox svg { /* 아이콘 스타일 */
-    font-size: 1.5rem;
+
+.checkbox svg {
+    font-size: 24px;
+    color: var(--gray-400);
+    transition: all var(--transition-fast);
+    flex-shrink: 0;
 }
+
+.checkbox:hover svg {
+    color: var(--secondary-500);
+    transform: scale(1.1);
+}
+
 .checkbox .text {
-    margin-left: 0.5rem;
     flex: 1;
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: var(--gray-700);
+    line-height: 1.5;
+    transition: all var(--transition-fast);
 }
-/* 완료됐을 때 스타일 */
+
+/* 완료 상태 */
 .checkbox.completed svg {
-    color: #22b8cf;
+    color: var(--success-500);
 }
+
 .checkbox.completed .text {
-    color: #adb5bd;
+    color: var(--gray-400);
     text-decoration: line-through;
+    opacity: 0.7;
 }
+
+.todo-list-item.completed {
+    background: var(--gray-50);
+    border-color: var(--gray-200);
+}
+
+/* 액션 버튼 영역 */
 .actions {
     display: flex;
     align-items: center;
+    gap: var(--space-2);
+    opacity: 0;
+    transition: opacity var(--transition-fast);
 }
-.edit, .remove {
-    font-size: 1.5rem;
-    color: #ff6b6b;
+
+.todo-list-item:hover .actions {
+    opacity: 1;
+}
+
+/* 우선순위 태그 */
+.priority-tag {
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-md);
+    font-size: var(--text-xs);
+    font-weight: var(--font-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-right: var(--space-2);
+}
+
+.todo-list-item.priority-high .priority-tag {
+    background: var(--danger-100);
+    color: var(--danger-700);
+}
+
+.todo-list-item.priority-medium .priority-tag {
+    background: var(--warning-100);
+    color: var(--warning-700);
+}
+
+.todo-list-item.priority-low .priority-tag {
+    background: var(--success-100);
+    color: var(--success-700);
+}
+
+/* 액션 버튼 */
+.action-btn {
+    padding: var(--space-2);
+    border-radius: var(--radius-md);
+    background: transparent;
+    border: none;
     cursor: pointer;
-    margin-left: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+    color: var(--gray-500);
 }
-.edit {
-    color: #fcc419;
+
+.action-btn:hover {
+    background: var(--gray-100);
+    color: var(--gray-700);
+    transform: scale(1.1);
+}
+
+.action-btn svg {
+    font-size: 16px;
+}
+
+/* 편집 버튼 */
+.action-btn:first-of-type:hover {
+    background: var(--warning-100);
+    color: var(--warning-600);
+}
+
+/* 삭제 버튼 */
+.action-btn:last-of-type:hover {
+    background: var(--danger-100);
+    color: var(--danger-600);
+}
+
+/* 포커스 상태 */
+.checkbox:focus-visible,
+.action-btn:focus-visible {
+    outline: 2px solid var(--secondary-500);
+    outline-offset: 2px;
+}
+
+/* 애니메이션 */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.todo-list-item {
+    animation: slideInUp var(--transition-base) ease;
+}
+
+/* 완료 체크 애니메이션 */
+@keyframes checkComplete {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.checkbox.completed svg {
+    animation: checkComplete 0.3s ease;
+}
+
+/* 우선순위별 배경 그라디언트 (선택사항) */
+.todo-list-item.priority-high:hover {
+    background: linear-gradient(135deg, var(--danger-50), white);
+}
+
+.todo-list-item.priority-medium:hover {
+    background: linear-gradient(135deg, var(--warning-50), white);
+}
+
+.todo-list-item.priority-low:hover {
+    background: linear-gradient(135deg, var(--success-50), white);
+}
+
+/* 접근성 개선 */
+@media (prefers-reduced-motion: reduce) {
+    .todo-list-item,
+    .checkbox,
+    .checkbox svg,
+    .checkbox .text,
+    .actions,
+    .action-btn {
+        transition: none;
+        animation: none;
+    }
+}
+
+/* 반응형 미디어 쿼리 추가 */
+
+/* Small Mobile (480px and below) */
+@media (max-width: 480px) {
+    .todo-list-item {
+        padding: 0.625rem;
+        margin-bottom: 0.625rem;
+        min-height: 56px;
+        border-radius: 6px;
+    }
+
+    .todo-list-item::before {
+        width: 3px;
+    }
+
+    .checkbox {
+        gap: 0.625rem;
+    }
+
+    .checkbox svg {
+        font-size: 20px;
+    }
+
+    .checkbox .text {
+        font-size: 0.875rem;
+        line-height: 1.4;
+    }
+
+    .priority-tag {
+        padding: 0.25rem 0.375rem;
+        font-size: 0.7rem;
+        margin-right: 0.5rem;
+    }
+
+    .action-btn {
+        padding: 0.375rem;
+        min-width: 32px;
+        min-height: 32px;
+    }
+
+    .action-btn svg {
+        font-size: 14px;
+    }
+
+    .actions {
+        gap: 0.25rem;
+    }
+
+    /* Always show actions on mobile for touch usability */
+    .actions {
+        opacity: 0.7;
+    }
+
+    .todo-list-item:hover .actions,
+    .todo-list-item:focus-within .actions {
+        opacity: 1;
+    }
+}
+
+/* Tablet (768px - 1199px) */
+@media (min-width: 768px) {
+    .todo-list-item {
+        padding: 1rem;
+        margin-bottom: 1rem;
+        min-height: 70px;
+        border-radius: 10px;
+    }
+
+    .todo-list-item::before {
+        width: 4px;
+    }
+
+    .checkbox {
+        gap: 1rem;
+    }
+
+    .checkbox svg {
+        font-size: 26px;
+    }
+
+    .checkbox .text {
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+
+    .priority-tag {
+        padding: 0.375rem 0.625rem;
+        font-size: 0.75rem;
+        margin-right: 0.75rem;
+    }
+
+    .action-btn {
+        padding: 0.5rem;
+        min-width: 36px;
+        min-height: 36px;
+    }
+
+    .action-btn svg {
+        font-size: 18px;
+    }
+
+    .actions {
+        gap: 0.5rem;
+    }
+}
+
+/* Desktop (1200px and above) */
+@media (min-width: 1200px) {
+    .todo-list-item {
+        padding: var(--space-4, 1rem);
+        margin-bottom: var(--space-3, 0.75rem);
+        min-height: 80px;
+        border-radius: var(--radius-lg, 12px);
+    }
+
+    .todo-list-item::before {
+        width: 4px;
+    }
+
+    .checkbox {
+        gap: var(--space-3, 0.75rem);
+    }
+
+    .checkbox svg {
+        font-size: 24px;
+    }
+
+    .checkbox .text {
+        font-size: var(--text-sm, 0.875rem);
+        line-height: 1.5;
+    }
+
+    .priority-tag {
+        padding: var(--space-1, 0.25rem) var(--space-2, 0.5rem);
+        font-size: var(--text-xs, 0.75rem);
+        margin-right: var(--space-2, 0.5rem);
+    }
+
+    .action-btn {
+        padding: var(--space-2, 0.5rem);
+        min-width: 40px;
+        min-height: 40px;
+    }
+
+    .action-btn svg {
+        font-size: 16px;
+    }
+
+    .actions {
+        gap: var(--space-2, 0.5rem);
+    }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .actions {
+        opacity: 0.8;
+    }
+
+    .action-btn {
+        min-width: 44px;
+        min-height: 44px;
+        padding: 0.75rem;
+    }
+
+    .checkbox svg {
+        min-width: 24px;
+        min-height: 24px;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .todo-list-item {
+        border: 2px solid #000;
+    }
+
+    .todo-list-item::before {
+        width: 6px;
+    }
+
+    .checkbox .text {
+        color: #000;
+        font-weight: 600;
+    }
+
+    .action-btn {
+        border: 1px solid #000;
+    }
+
+    .priority-tag {
+        border: 1px solid #000;
+        font-weight: 700;
+    }
 }

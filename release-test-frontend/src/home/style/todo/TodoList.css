@@ -1,5 +1,71 @@
+/* Mobile-first approach */
+.TodoList,
 .ReleaseList {
-    min-height: 320px;
-    max-height: 513px;
-    overflow-y: auto; /* 목록이 길어지면 스크롤 생성 */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem;
+    background: #fafafa;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    min-height: 200px;
+    overflow: hidden; /* 전체 컨테이너 오버플로우 숨김 */
+}
+
+/* 할 일 아이템들 컨테이너 */
+.todo-items-container {
+    flex: 1;
+    overflow-y: auto; /* 스크롤 가능 */
+    overflow-x: hidden; /* 가로 스크롤 숨김 */
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-right: 0.25rem; /* 스크롤바 여백 */
+}
+
+/* 스크롤바 스타일링 */
+.todo-items-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.todo-items-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.todo-items-container::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+.todo-items-container::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* 스크롤바 스타일링 제거 (더 이상 필요 없음) */
+
+/* Small Mobile (480px and below) */
+@media (max-width: 480px) {
+    .TodoList,
+    .ReleaseList {
+        padding: 0.375rem;
+        border-radius: 6px;
+    }
+}
+
+/* Tablet (768px - 1199px) */
+@media (min-width: 768px) {
+    .TodoList,
+    .ReleaseList {
+        padding: 0.75rem;
+        border-radius: 10px;
+    }
+}
+
+/* Desktop (1200px and above) */
+@media (min-width: 1200px) {
+    .TodoList,
+    .ReleaseList {
+        padding: 1rem;
+        border-radius: 12px;
+    }
 }

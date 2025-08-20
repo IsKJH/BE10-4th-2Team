@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import LoginModal from '../modals/LoginModal.tsx';
+import LoginModal from '@/auth/modals/LoginModal';
 
 const LoginRequired: React.FC = () => {
     const [showLoginModal, setShowLoginModal] = useState(false);

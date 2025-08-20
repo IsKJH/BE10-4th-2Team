@@ -1,6 +1,33 @@
+/* Mobile-first approach */
 .progress-circle-container {
     position: relative;
     text-align: center;
+    display: inline-block;
+    width: 100%;
+    max-width: 200px;
+    margin: 0 auto;
+}
+
+.progress-circle-svg {
+    width: 100%;
+    height: auto;
+    max-width: 200px;
+    transform: rotate(-90deg);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.progress-circle-track {
+    fill: none;
+    stroke: #f1f5f9;
+    stroke-width: 8;
+}
+
+.progress-circle-progress {
+    fill: none;
+    stroke: #8e2de2;
+    stroke-width: 8;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.5s ease-in-out;
 }
 
 .progress-circle-label {
@@ -8,6 +35,149 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 1.8rem;
+    font-size: 1.25rem;
     font-weight: bold;
+    color: #1e293b;
+    line-height: 1;
+    pointer-events: none;
+}
+
+.progress-circle-percentage {
+    font-size: 1.5rem;
+    display: block;
+}
+
+.progress-circle-text {
+    font-size: 0.75rem;
+    color: #64748b;
+    font-weight: 500;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+/* Small Mobile (480px and below) */
+@media (max-width: 480px) {
+    .progress-circle-container {
+        max-width: 120px;
+    }
+
+    .progress-circle-svg {
+        max-width: 120px;
+    }
+
+    .progress-circle-track,
+    .progress-circle-progress {
+        stroke-width: 6;
+    }
+
+    .progress-circle-label {
+        font-size: 1rem;
+    }
+
+    .progress-circle-percentage {
+        font-size: 1.125rem;
+    }
+
+    .progress-circle-text {
+        font-size: 0.7rem;
+    }
+}
+
+/* Tablet (768px - 1199px) */
+@media (min-width: 768px) {
+    .progress-circle-container {
+        max-width: 180px;
+    }
+
+    .progress-circle-svg {
+        max-width: 180px;
+    }
+
+    .progress-circle-track,
+    .progress-circle-progress {
+        stroke-width: 10;
+    }
+
+    .progress-circle-label {
+        font-size: 1.5rem;
+    }
+
+    .progress-circle-percentage {
+        font-size: 1.75rem;
+    }
+
+    .progress-circle-text {
+        font-size: 0.8rem;
+    }
+}
+
+/* Desktop (1200px and above) */
+@media (min-width: 1200px) {
+    .progress-circle-container {
+        max-width: 200px;
+    }
+
+    .progress-circle-svg {
+        max-width: 200px;
+    }
+
+    .progress-circle-track,
+    .progress-circle-progress {
+        stroke-width: 12;
+    }
+
+    .progress-circle-label {
+        font-size: 1.8rem;
+    }
+
+    .progress-circle-percentage {
+        font-size: 2rem;
+    }
+
+    .progress-circle-text {
+        font-size: 0.875rem;
+    }
+}
+
+/* Animation for progress circle */
+@keyframes progress-animation {
+    from {
+        stroke-dashoffset: var(--circle-circumference);
+    }
+    to {
+        stroke-dashoffset: var(--progress-offset);
+    }
+}
+
+.progress-circle-progress.animate {
+    animation: progress-animation 1s ease-out forwards;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .progress-circle-track {
+        stroke: #000;
+        stroke-width: 2px;
+    }
+
+    .progress-circle-progress {
+        stroke: #fff;
+        stroke-width: 4px;
+    }
+
+    .progress-circle-label {
+        color: #000;
+        font-weight: 900;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .progress-circle-progress {
+        transition: none;
+    }
+
+    .progress-circle-progress.animate {
+        animation: none;
+    }
 }

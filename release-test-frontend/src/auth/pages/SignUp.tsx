@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
-import {useAuth} from "../hooks/useAuth.ts";
+import {useAuth} from "@/auth/hooks/useAuth";
+import {Input, Button} from "@/shared/components/ui";
 
 const SignUp: React.FC = () => {
     const {signUp} = useAuth();
@@ -81,54 +82,45 @@ const SignUp: React.FC = () => {
     };
 
     return (
-        <div className="h-full bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
                 <div className="text-center">
-                    <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
+                    <h1 className="text-3xl font-bold" style={{color: 'var(--gray-900)'}}>
                         회원가입
-                    </h2>
-                    <p className="mt-2 text-center text-sm text-gray-600">
+                    </h1>
+                    <p className="mt-2 text-sm" style={{color: 'var(--gray-600)'}}>
                         서비스 이용을 위한 추가 정보를 입력해주세요
                     </p>
                 </div>
             </div>
 
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-                <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+                <div className="bg-white py-8 px-6 shadow-lg rounded-xl" style={{borderColor: 'var(--gray-200)', border: '1px solid'}}>
                     <form className="space-y-6" onSubmit={handleSubmit}>
-                        <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                                이메일
-                            </label>
-                            <div className="mt-1">
-                                <input
-                                    id="email"
-                                    name="email"
-                                    type="email"
-                                    value={email}
-                                    disabled={true}
-                                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 bg-gray-50 sm:text-sm"
-                                />
-                            </div>
-                        </div>
+                        <Input
+                            id="email"
+                            name="email"
+                            type="email"
+                            label="이메일"
+                            value={email}
+                            disabled={true}
+                            variant="filled"
+                            size="md"
+                            fullWidth
+                        />
 
-                        <div>
-                            <label htmlFor="nickname" className="block text-sm font-medium text-gray-700">
-                                닉네임
-                            </label>
-                            <div className="mt-1">
-                                <input
-                                    id="nickname"
-                                    name="nickname"
-                                    type="text"
-                                    value={nickname}
-                                    onChange={(e) => setNickname(e.target.value)}
-                                    required
-                                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                    placeholder="닉네임을 입력하세요"
-                                />
-                            </div>
-                        </div>
+                        <Input
+                            id="nickname"
+                            name="nickname"
+                            type="text"
+                            label="닉네임"
+                            value={nickname}
+                            onChange={(e) => setNickname(e.target.value)}
+                            required
+                            placeholder="닉네임을 입력하세요"
+                            size="md"
+                            fullWidth
+                        />
 
                         <div>
                             <fieldset>
@@ -144,11 +136,15 @@ const SignUp: React.FC = () => {
                                                     type="checkbox"
                                                     checked={allAgreed}
                                                     onChange={handleAllAgreementChange}
-                                                    className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                                                    className="h-4 w-4 rounded transition-colors"
+                                    style={{
+                                        accentColor: 'var(--primary-500)',
+                                        borderColor: 'var(--gray-300)'
+                                    }}
                                                 />
                                             </div>
                                             <div className="ml-3 text-sm">
-                                                <label htmlFor="all-agreements" className="font-medium text-gray-700">
+                                                <label htmlFor="all-agreements" className="font-medium" style={{color: 'var(--gray-700)'}}>
                                                     전체 동의
                                                 </label>
                                             </div>
@@ -165,16 +161,20 @@ const SignUp: React.FC = () => {
                                                     type="checkbox"
                                                     checked={agreements.serviceTerms}
                                                     onChange={() => handleAgreementChange('serviceTerms')}
-                                                    className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                                                    className="h-4 w-4 rounded transition-colors"
+                                    style={{
+                                        accentColor: 'var(--primary-500)',
+                                        borderColor: 'var(--gray-300)'
+                                    }}
                                                 />
                                             </div>
                                             <div className="ml-3 text-sm flex-1 flex justify-between items-center">
-                                                <label htmlFor="service-terms" className="text-gray-700">
-                                                    <span className="text-red-600">[필수]</span> 서비스 이용약관
+                                                <label htmlFor="service-terms" style={{color: 'var(--gray-700)'}}>
+                                                    <span className="text-danger">[필수]</span> 서비스 이용약관
                                                 </label>
                                                 <button
                                                     type="button"
-                                                    className="text-indigo-600 hover:text-indigo-500 text-sm underline"
+                                                    className="text-primary hover:text-primary text-sm underline transition-colors"
                                                     onClick={() => window.open('/terms/service', '_blank')}
                                                 >
                                                     보기
@@ -190,16 +190,20 @@ const SignUp: React.FC = () => {
                                                     type="checkbox"
                                                     checked={agreements.privacyPolicy}
                                                     onChange={() => handleAgreementChange('privacyPolicy')}
-                                                    className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                                                    className="h-4 w-4 rounded transition-colors"
+                                    style={{
+                                        accentColor: 'var(--primary-500)',
+                                        borderColor: 'var(--gray-300)'
+                                    }}
                                                 />
                                             </div>
                                             <div className="ml-3 text-sm flex-1 flex justify-between items-center">
-                                                <label htmlFor="privacy-policy" className="text-gray-700">
-                                                    <span className="text-red-600">[필수]</span> 개인정보처리방침
+                                                <label htmlFor="privacy-policy" style={{color: 'var(--gray-700)'}}>
+                                                    <span className="text-danger">[필수]</span> 개인정보처리방침
                                                 </label>
                                                 <button
                                                     type="button"
-                                                    className="text-indigo-600 hover:text-indigo-500 text-sm underline"
+                                                    className="text-primary hover:text-primary text-sm underline transition-colors"
                                                     onClick={() => window.open('/terms/privacy', '_blank')}
                                                 >
                                                     보기
@@ -215,12 +219,16 @@ const SignUp: React.FC = () => {
                                                     type="checkbox"
                                                     checked={agreements.marketing}
                                                     onChange={() => handleAgreementChange('marketing')}
-                                                    className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                                                    className="h-4 w-4 rounded transition-colors"
+                                    style={{
+                                        accentColor: 'var(--primary-500)',
+                                        borderColor: 'var(--gray-300)'
+                                    }}
                                                 />
                                             </div>
                                             <div className="ml-3 text-sm">
-                                                <label htmlFor="marketing" className="text-gray-700">
-                                                    <span className="text-gray-500">[선택]</span> 마케팅 정보 수신 동의
+                                                <label htmlFor="marketing" style={{color: 'var(--gray-700)'}}>
+                                                    <span style={{color: 'var(--gray-500)'}}>[선택]</span> 마케팅 정보 수신 동의
                                                 </label>
                                             </div>
                                         </div>
@@ -230,19 +238,16 @@ const SignUp: React.FC = () => {
                         </div>
 
                         <div>
-                            <button
+                            <Button
                                 type="submit"
                                 disabled={isLoading || !agreements.serviceTerms || !agreements.privacyPolicy}
-                                className="group relative w-full flex justify-center items-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                                loading={isLoading}
+                                variant="primary"
+                                size="md"
+                                fullWidth
                             >
-                                {isLoading && (
-                                    <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                    </svg>
-                                )}
                                 {isLoading ? "회원가입 중..." : "회원가입"}
-                            </button>
+                            </Button>
                         </div>
                     </form>
                 </div>
