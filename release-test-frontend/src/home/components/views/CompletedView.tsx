@@ -1,7 +1,6 @@
 import React, { useMemo, useEffect, useState } from 'react';
 import { useAppStore } from '@/home/store/useAppStore';
 import { useAuth } from '@/auth/hooks/useAuth';
-import { todoApi } from '@/shared/utils/api/todoApi';
 import type {Release} from '@/home/types/release';
 import TodoList from '@/home/components/todo/TodoList';
 import LoadingSpinner from '@/shared/components/ui/LoadingSpinner';
@@ -10,11 +9,11 @@ import '@/home/style/views/CommonView.css';
 
 const CompletedView: React.FC = () => {
     const { isLoggedIn } = useAuth();
-    const { deleteTodo: storeDeleteTodo, toggleTodo: storeToggleTodo } = useAppStore();
+    const { deleteTodo: storeDeleteTodo, toggleTodo: storeToggleTodo, loadAllCompletedTodos } = useAppStore();
     const [completedTodos, setCompletedTodos] = useState<Release[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    // 로컬 상태 업데이트를 포함한 핸들러들
+    // 로컬 상태 업데이트를 포함한 핸들러들  
     const handleDeleteTodo = async (id: number) => {
         await storeDeleteTodo(id);
         setCompletedTodos(prev => prev.filter(todo => todo.id !== id));
@@ -22,11 +21,8 @@ const CompletedView: React.FC = () => {
 
     const handleToggleTodo = async (id: number) => {
         await storeToggleTodo(id);
-        setCompletedTodos(prev => 
-            prev.map(todo => 
-                todo.id === id ? { ...todo, completed: !todo.completed } : todo
-            )
-        );
+        // 완료 상태가 바뀌면 완료된 업무 목록에서 제거 (미완료로 변경된 경우)
+        setCompletedTodos(prev => prev.filter(todo => todo.id !== id));
     };
 
     const todayString = useMemo(() => new Date().toISOString().split('T')[0], []);
@@ -54,18 +50,8 @@ const CompletedView: React.FC = () => {
 
             try {
                 setIsLoading(true);
-                // 최근 7일간의 완료된 할 일들 로드
-                const promises = [];
-                for (let i = 0; i < 7; i++) {
-                    const date = new Date();
-                    date.setDate(date.getDate() - i);
-                    const dateString = date.toISOString().split('T')[0];
-                    promises.push(todoApi.getTodosByDate(dateString));
-                }
-                
-                const results = await Promise.all(promises);
-                const allTodos = results.flat();
-                const completed = allTodos.filter(todo => todo.completed);
+                // 주간 차트와 동일한 방식으로 완료된 할일 로드
+                const completed = await loadAllCompletedTodos();
                 setCompletedTodos(completed);
             } catch (error) {
                 console.error('Failed to load completed todos:', error);

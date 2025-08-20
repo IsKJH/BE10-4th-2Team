@@ -130,30 +130,53 @@ const DashboardHome: React.FC = () => {
     
     // 실제 완료된 업무 데이터를 기반으로 한 주간 데이터 생성
     const weeklyChartData: WeeklyData[] = useMemo(() => {
-        // 로드된 완료된 할일 데이터를 사용하여 주간 차트 생성
-        const currentDate = new Date();
         const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
         
-        // 이번주와 저번주 시작일 계산
-        const thisWeekStart = new Date(currentDate);
-        thisWeekStart.setDate(currentDate.getDate() - currentDate.getDay());
-        thisWeekStart.setHours(0, 0, 0, 0);
+        // 현재 날짜를 로컬 시간으로 정확히 가져오기
+        const now = new Date();
+        const currentDateStr = now.toISOString().split('T')[0];
+        const currentDayOfWeek = now.getDay(); // 0=일, 1=월, 2=화, 3=수, 4=목, 5=금, 6=토
         
+        console.log('[디버깅] 현재 정보:', `${currentDateStr} (${weekdays[currentDayOfWeek]}요일)`);
+        
+        // 문자열 기반으로 주 시작일 계산 (UTC 이슈 완전 해결)
+        const currentDate = new Date(currentDateStr + 'T00:00:00.000');
+        const daysFromSunday = currentDayOfWeek; // 현재 요일이 일요일로부터 몇일 후인지
+        
+        // 이번주 일요일 계산
+        const thisWeekStart = new Date(currentDate);
+        thisWeekStart.setDate(currentDate.getDate() - daysFromSunday);
+        
+        // 저번주 일요일 계산
         const lastWeekStart = new Date(thisWeekStart);
         lastWeekStart.setDate(thisWeekStart.getDate() - 7);
         
+        // 날짜를 YYYY-MM-DD 형식으로 변환하는 함수
+        const formatDate = (date: Date): string => {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
+        
+        const thisWeekStartStr = formatDate(thisWeekStart);
+        const lastWeekStartStr = formatDate(lastWeekStart);
+        
+        console.log('[디버깅] 주간 계산 결과:');
+        console.log('- 이번주 시작:', thisWeekStartStr);
+        console.log('- 저번주 시작:', lastWeekStartStr);
+        
         return weekdays.map((dayName, dayIndex) => {
-            // 이번주 해당 요일
+            // 각 요일의 날짜 계산
             const thisWeekDay = new Date(thisWeekStart);
             thisWeekDay.setDate(thisWeekStart.getDate() + dayIndex);
             
-            // 저번주 해당 요일  
             const lastWeekDay = new Date(lastWeekStart);
             lastWeekDay.setDate(lastWeekStart.getDate() + dayIndex);
             
-            // 날짜 문자열 생성 (YYYY-MM-DD 형식)
-            const thisWeekDateStr = thisWeekDay.toISOString().split('T')[0];
-            const lastWeekDateStr = lastWeekDay.toISOString().split('T')[0];
+            // 날짜 문자열 생성
+            const thisWeekDateStr = formatDate(thisWeekDay);
+            const lastWeekDateStr = formatDate(lastWeekDay);
             
             // 로드된 완료된 할일 데이터에서 해당 날짜의 완료된 할일 개수 계산
             const thisWeekCompleted = allCompletedTodos.filter(todo => 
@@ -165,10 +188,23 @@ const DashboardHome: React.FC = () => {
             ).length;
             
             // 개발환경에서만 데이터 확인 로그
-            if (import.meta.env.DEV && dayIndex === 0) {
-                console.log(`[주간차트] 전체 완료된 todos: ${allCompletedTodos.length}개`);
-                console.log(`[주간차트] 이번주 ${dayName}(${thisWeekDateStr}): ${thisWeekCompleted}개 완료`);
-                console.log(`[주간차트] 저번주 ${dayName}(${lastWeekDateStr}): ${lastWeekCompleted}개 완료`);
+            if (import.meta.env.DEV) {
+                if (dayIndex === 0) {
+                    console.log(`[주간차트] 전체 완료된 todos: ${allCompletedTodos.length}개`);
+                    console.log(`[주간차트] 현재 날짜: ${currentDateStr}`);
+                    console.log(`[주간차트] 이번주 시작: ${thisWeekStartStr}`);
+                    console.log(`[주간차트] 저번주 시작: ${lastWeekStartStr}`);
+                }
+                
+                // 8월 14일 관련 디버깅 - 더 자세히
+                if (lastWeekDateStr === '2025-08-14' || thisWeekDateStr === '2025-08-14') {
+                    console.log(`[디버깅] 8월14일 발견! 요일: ${dayName}, 인덱스: ${dayIndex}`);
+                    console.log(`[디버깅] thisWeekDateStr: ${thisWeekDateStr}, lastWeekDateStr: ${lastWeekDateStr}`);
+                    console.log(`[디버깅] 8월14일은 실제로 ${new Date('2025-08-14T00:00:00.000').getDay()}요일 (0=일~6=토)`);
+                    console.log(`[디버깅] 완료된 개수: ${lastWeekCompleted}개`);
+                }
+                
+                console.log(`[주간차트] ${dayName} - 이번주(${thisWeekDateStr}): ${thisWeekCompleted}개, 저번주(${lastWeekDateStr}): ${lastWeekCompleted}개`);
             }
             
             return {
@@ -194,27 +230,37 @@ const DashboardHome: React.FC = () => {
         setIsModalOpen(true);
     };
 
-    const handleSave = (data: { text: string; priority: Priority }) => {
-        if (editingTodo) {
-            updateTodo(editingTodo.id, data);
-        } else {
-            addTodo({ ...data, dueDate: todayString });
-        }
-        setIsModalOpen(false);
-        setEditingTodo(null);
-    };
-
-    // 할 일 토글 시 주간 차트 데이터 업데이트
-    const handleToggleTodo = async (id: number) => {
-        await toggleTodo(id);
-        
-        // 주간 차트 데이터 새로고침
+    // 주간 차트 데이터 새로고침 공통 함수
+    const refreshWeeklyChartData = async () => {
         try {
             const completedTodos = await loadAllCompletedTodos();
             setAllCompletedTodos(completedTodos);
         } catch (error) {
             console.error('Failed to refresh weekly chart data:', error);
         }
+    };
+
+    const handleSave = async (data: { text: string; priority: Priority }) => {
+        if (editingTodo) {
+            await updateTodo(editingTodo.id, data);
+        } else {
+            await addTodo({ ...data, dueDate: todayString });
+        }
+        setIsModalOpen(false);
+        setEditingTodo(null);
+        await refreshWeeklyChartData();
+    };
+
+    // 할 일 토글 시 주간 차트 데이터 업데이트
+    const handleToggleTodo = async (id: number) => {
+        await toggleTodo(id);
+        await refreshWeeklyChartData();
+    };
+
+    // 할 일 삭제 시 주간 차트 데이터 업데이트
+    const handleDeleteTodo = async (id: number) => {
+        await deleteTodo(id);
+        await refreshWeeklyChartData();
     };
 
     // 로그인되지 않은 경우 로그인 페이지 표시
@@ -277,7 +323,7 @@ const DashboardHome: React.FC = () => {
                             </span>
                         )}
                     </h3>
-                    <TodoList todos={todaysTodos} onRemove={deleteTodo} onToggle={handleToggleTodo} onEdit={openModal}/>
+                    <TodoList todos={todaysTodos} onRemove={handleDeleteTodo} onToggle={handleToggleTodo} onEdit={openModal}/>
                 </section>
                 <section className="weekly-chart-section">
                     <h3>주간 업무 비교</h3><WeeklyChart data={weeklyChartData} />
