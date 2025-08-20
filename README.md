@@ -2,6 +2,19 @@
 
 BE10 4기 2팀의 할 일 관리 플랫폼입니다. 사용자의 생산성 향상을 위한 직관적이고 효율적인 Todo 관리 시스템을 제공합니다.
 
+## 😎 팀원소개
+
+<table>
+   <tr>
+    <td align="center"><b><a href="https://github.com/IsKJH">김지한</a></b></td>
+    <td align="center"><b><a href="https://github.com/leeeeegun">이의건</a></b></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/IsKJH"><img src="https://avatars.githubusercontent.com/u/207959007?v=4" width="100px" /></a></td>
+    <td align="center"><a href="https://github.com/leeeeegun"><img src="https://avatars.githubusercontent.com/u/211801669?v=4" width="100px" /></a></td>  
+  </tr>
+  </table>
+
 ## 🚀 프로젝트 개요
 
 지건컴퍼니는 개인 및 팀의 업무 관리를 위한 웹 애플리케이션으로, 할 일 관리, 캘린더 기능, 대시보드를 통한 생산성 분석 등을 제공합니다.
