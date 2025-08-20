@@ -102,8 +102,10 @@ const LoginModal: React.FC<LoginModalProps> = ({closeLoginModal}) => {
                     </div>
                     <div className="modal-footer justify-center">
                         <p className="text-xs leading-relaxed" style={{color: 'var(--gray-400)'}}>
-                            로그인 시 <span className="text-primary cursor-pointer">서비스 이용약관</span> 및 <span
-                            className="text-primary cursor-pointer">개인정보처리방침</span>에 동의한 것으로 간주됩니다.
+                            로그인 시 <span className="text-primary cursor-pointer"
+                                        onClick={() => window.open('/terms/service', '_blank')}>서비스 이용약관</span> 및 <span
+                            className="text-primary cursor-pointer"
+                            onClick={() => window.open('/terms/privacy', '_blank')}>개인정보처리방침</span>에 동의한 것으로 간주됩니다.
                         </p>
                     </div>
                 </div>
